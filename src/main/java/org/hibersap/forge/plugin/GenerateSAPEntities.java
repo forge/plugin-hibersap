@@ -134,7 +134,7 @@ public class GenerateSAPEntities implements Plugin {
 	 */
 	@DefaultCommand(help="Generates the necessary Java classes for a given SAP function")
 	public void generateSAPEntities(
-			@Option(name="name-pattern", help="Pattern to search SAP function names. Use * and ? as wildcards.", defaultValue="BAPI?FLC*") final String namePattern, 
+			@Option(name="name-pattern", help="Pattern to search SAP function names. Use * and ? as wildcards.") final String namePattern, 
 			@Option(name="max-results", help="Number of max. results. Use 0 for unlimited result list", defaultValue="20") final int maxResults) throws JAXBException, ParserConfigurationException, FileNotFoundException, TransformerException, SessionManagerDuplicateException, ClassNotFoundException {
 		final SessionManagerConfig sessionManagerConfig = createSessionManagerConfig(); 
 		final AnnotationConfiguration configuration = new AnnotationConfiguration(sessionManagerConfig);
