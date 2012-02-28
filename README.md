@@ -23,7 +23,9 @@ Install sapjco3 jar to your local Maven repository from the command line:
 
 
 * Create or use an existing a Maven project (project may be created with Forge from the command line).
-* Navigate into the project, set your session manager name and connection properties and use the generate-sap-entities command to connect to your SAP system and generate Java classes which are used by Hibersap. 
+* Navigate into the project
+* Set your session manager name and connection properties
+* Use the generate-sap-entities command to connect to your SAP system and generate Java classes which are used by Hibersap. 
 
 
 <h2>Commands</h2>
