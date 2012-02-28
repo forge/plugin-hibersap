@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hibersap xmlns="http://hibersap.org/xml/ns/hibersap-config">
+	<session-manager name="SM001">
+		<context>org.hibersap.execution.jco.JCoContext</context>
+
+		<!-- Replace the JCo properties to fit to your own set-up -->
+		<!-- Need to be replaced by custom properties, a default should be available -->
+		<properties>
+			<property name="jco.client.client" value="001" />
+			<property name="jco.client.user" value="sapuser" />
+			<property name="jco.client.passwd" value="password" />
+			<property name="jco.client.lang" value="en" />
+			<property name="jco.client.ashost" value="sap.spree.de" />
+			<property name="jco.client.sysnr" value="00" />
+			<property name="jco.destination.pool_capacity" value="1" />
+		</properties>
+
+		<annotated-classes>
+			<annotated-class>org.hibersap.forge.FunctionModuleSearch</annotated-class>
+		</annotated-classes>
+
+	</session-manager>
+</hibersap>
