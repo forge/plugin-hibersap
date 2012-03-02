@@ -1,7 +1,7 @@
 <h2>Hibersap Plugin for Forge</h2>
 
 
-A plugin to generate classes used by the Hibersap framework to connect to a SAP system.
+A plugin to generate classes to get used by the Hibersap framework to connect to a SAP system.
 
 The plugin allows to search for function names at a given SAP system and generates all required classes and configuration files to use the given function with the Hibersap framework.
 
