@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -110,8 +111,8 @@ public class HibersapXMLManager {
 	 * @param sessionManagerConfig - the session manager configuration
 	 */
 	private void prepareSessionManager(final SessionManagerConfig sessionManagerConfig) {
-//		sessionManagerConfig.setExecutionInterceptorClasses(null); //Nullpointer!
-//		sessionManagerConfig.setBapiInterceptorClasses(null); //Nullpointer!
+		sessionManagerConfig.setExecutionInterceptorClasses(Collections.EMPTY_LIST); //Nullpointer if set null
+		sessionManagerConfig.setBapiInterceptorClasses(Collections.EMPTY_LIST); //Nullpointer if set null
 		sessionManagerConfig.setValidationMode(null);
 	}
 	
@@ -225,6 +226,7 @@ public class HibersapXMLManager {
 		}
 		
 	}
+	
 //	public boolean sessionManagerDuplicate(final SessionManagerConfig sessManagerConfig) {
 //		final List<SessionManagerConfig> sessionManagers = hibersapConfig.getSessionManagers();
 //		
