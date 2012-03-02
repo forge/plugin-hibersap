@@ -111,8 +111,8 @@ public class HibersapXMLManager {
 	 * @param sessionManagerConfig - the session manager configuration
 	 */
 	private void prepareSessionManager(final SessionManagerConfig sessionManagerConfig) {
-		sessionManagerConfig.setExecutionInterceptorClasses(Collections.EMPTY_LIST); //Nullpointer if set null
-		sessionManagerConfig.setBapiInterceptorClasses(Collections.EMPTY_LIST); //Nullpointer if set null
+		sessionManagerConfig.setExecutionInterceptorClasses(Collections.EMPTY_LIST); //TODO Nullpointer if set null
+		sessionManagerConfig.setBapiInterceptorClasses(Collections.EMPTY_LIST); //TODO Nullpointer if set null
 		sessionManagerConfig.setValidationMode(null);
 	}
 	
@@ -200,6 +200,8 @@ public class HibersapXMLManager {
 //		final Object object = unmarshaller.unmarshal(inputStream);
 //		
 //		hibersapConfig = (HibersapConfig) object;
+		
+		//TODO Check for problem with Forge, test is working (see org.hibersap.forge.plugin.HibersapXMLManagerTest.readHibersapXML())
 		
 		final HibersapConfig hibersapConfig = parser.parseResource(inputStream, HIBERSAPXML_FILENAME);
 		
