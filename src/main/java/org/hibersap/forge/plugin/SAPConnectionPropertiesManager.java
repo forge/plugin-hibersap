@@ -24,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
@@ -142,7 +143,8 @@ public class SAPConnectionPropertiesManager {
 	 * @return the JCo SAP connection properties
 	 */
 	public Set<Entry<Object, Object>> getSAPJcoProperties() {
-		final Set<Entry<Object, Object>> jco = sapConnection.entrySet();
+		//New Set necessary, because the sapConnection properties shall not be affected
+		final Set<Entry<Object, Object>> jco = new HashSet<Entry<Object,Object>>(sapConnection.entrySet());
 		final FilterCollection filter = new FilterCollection(jco, "jco", "context");
 		
 		filter.filter();
@@ -157,7 +159,9 @@ public class SAPConnectionPropertiesManager {
 	 * @return the value belonging to the given key
 	 */
 	public String getSAPProperty(final String key) {
-		return sapConnection.getProperty(key);
+		final String property = sapConnection.getProperty(key);
+		
+		return property;
 	}
 	
 	/**
