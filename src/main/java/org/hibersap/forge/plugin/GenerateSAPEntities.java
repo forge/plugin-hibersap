@@ -85,7 +85,7 @@ public class GenerateSAPEntities implements Plugin {
 	@Inject
 	public GenerateSAPEntities(final Project project, final Shell shell) throws IOException {
 		final String pluginDirPath  = shell.getEnvironment().getPluginDirectory().getFullyQualifiedName();
-		final String configDirPath = pluginDirPath + "/org/hibersap/forge/plugin/hibersap-plugin/config/";
+		final String configDirPath = pluginDirPath + "/org/hibersap/forge/plugin/plugin-hibersap/config/";
 		
 		this.shell = shell;
 		this.project = project;
@@ -135,7 +135,7 @@ public class GenerateSAPEntities implements Plugin {
 	@DefaultCommand(help="Generates the necessary Java classes for a given SAP function")
 	public void generateSAPEntities(
 			@Option(name="name-pattern", help="Pattern to search SAP function names. Use * and ? as wildcards.") final String namePattern, 
-			@Option(name="max-results", help="Number of max. results. Use 0 for unlimited result list", defaultValue="20") final int maxResults) throws JAXBException, ParserConfigurationException, FileNotFoundException, TransformerException, SessionManagerDuplicateException, ClassNotFoundException {
+			@Option(name="max-results", help="Number of max. results. Use 0 for unlimited result list. Default value is 20", defaultValue="20") final int maxResults) throws JAXBException, ParserConfigurationException, FileNotFoundException, TransformerException, SessionManagerDuplicateException, ClassNotFoundException {
 		final SessionManagerConfig sessionManagerConfig = createSessionManagerConfig(); 
 		final AnnotationConfiguration configuration = new AnnotationConfiguration(sessionManagerConfig);
 		final SessionManager sessionManager = configuration.buildSessionManager();
@@ -226,8 +226,22 @@ public class GenerateSAPEntities implements Plugin {
 				sessionManagerConfig.setContext(sapConnectionPropertiesManager.getSAPProperty("jca.context"));
 				sessionManagerConfig.setJcaConnectionFactory(sapConnectionPropertiesManager.getSAPProperty("jca.connection.factory"));
 				sessionManagerConfig.setJcaConnectionSpecFactory(sapConnectionPropertiesManager.getSAPProperty("jca.connectionspec.factory"));
-				sessionManagerConfig.setProperties(null);
+				sessionManagerConfig.setProperties(Collections.EMPTY_SET);//Nullpointer if set null
 			} else {
+				final DependencyFacet dependencyFacet = project.getFacet(DependencyFacet.class);
+				
+				//Add hibersap-jco dependency
+				final Dependency hibersapJCo = DependencyBuilder.create()
+						.setGroupId("org.hibersap")
+						.setArtifactId("hibersap-jco");
+				addDependency(dependencyFacet, hibersapJCo);
+				
+				//Add SAP JCo dependency
+				final Dependency sapJCo = DependencyBuilder.create()
+						.setGroupId("com.sap")
+						.setArtifactId("sap-jco");
+				addDependency(dependencyFacet, sapJCo);
+				
 				sessionManagerConfig.setJcaConnectionFactory(null);
 				sessionManagerConfig.setJcaConnectionSpecFactory(null);			
 			}
@@ -300,28 +314,39 @@ public class GenerateSAPEntities implements Plugin {
 		//Check not necessary, because its performed in the addRepository method too, that why repo will be removed if present
 		dependencyFacet.addRepository("repository.hibersap", HIBERSAP_REPO_URL);
 		
-		//Add Hibersap dependencies
+		//Add hibersap-core dependency
 		final Dependency hibersapCore = DependencyBuilder.create()
 				.setGroupId("org.hibersap")
 				.setArtifactId("hibersap-core");
 		addDependency( dependencyFacet, hibersapCore );
 				
-		final Dependency hibersapJCo = DependencyBuilder.create()
-				.setGroupId("org.hibersap")
-				.setArtifactId("hibersap-jco");
-		addDependency(dependencyFacet, hibersapJCo);
-	    
-		//Add SAP JCo dependency
-		final Dependency sapJCo = DependencyBuilder.create()
-				.setGroupId("com.sap")
-				.setArtifactId("sap-jco");
-		addDependency(dependencyFacet, sapJCo);
+		//TODO Check: Dependency handling swapped to handleHibersapXML
 		
-		//Add javax validation api for bean validation
-		final Dependency beanValidation = DependencyBuilder.create()
-				.setGroupId("javax.validation")
-				.setArtifactId("validation-api");
-		addDependency(dependencyFacet, beanValidation);
+//		final Dependency hibersapJCo = DependencyBuilder.create()
+//				.setGroupId("org.hibersap")
+//				.setArtifactId("hibersap-jco");
+//		addDependency(dependencyFacet, hibersapJCo);
+	    
+//		//Add SAP JCo dependency
+//		final Dependency sapJCo = DependencyBuilder.create()
+//				.setGroupId("com.sap")
+//				.setArtifactId("sap-jco");
+//		addDependency(dependencyFacet, sapJCo);
+		
+		shell.println();
+			
+		//Check if user wants to use bean validation
+		final boolean useBeanValidation = shell.promptBoolean("Do you want to  use bean validation in your project?", false);
+			
+		if(useBeanValidation) {
+			//Add javax validation api for bean validation
+			final Dependency beanValidation = DependencyBuilder.create()
+					.setGroupId("javax.validation")
+					.setArtifactId("validation-api");
+			addDependency(dependencyFacet, beanValidation);
+		}
+		
+		
 	}
 
 	/**
@@ -332,18 +357,6 @@ public class GenerateSAPEntities implements Plugin {
 	 */
 	private void addDependency(final DependencyFacet dependencyFacet, final Dependency dependency) {
 		if(!dependencyFacet.hasDirectDependency(dependency)) {
-			if(dependency.getArtifactId().equals("validation-api")) {
-				shell.println();
-				
-				//Check if user wants to use bean validation
-				final boolean beanValidation = shell.promptBoolean("Do you want to  use bean validation in your project?", false);
-				
-				//Leave method if bean validation is not used
-				if(!beanValidation) {
-					return;
-				}
-			}
-
 			shell.println();
 			
 			final List<Dependency> versions = dependencyFacet.resolveAvailableVersions(dependency);
