@@ -57,7 +57,7 @@ public class GenerateSAPEntitiesTest extends AbstractShellTest {
 	@Before
 	public void init() throws Exception {
 		pluginDirPath = getShell().getEnvironment().getPluginDirectory().getFullyQualifiedName();
-		filePath = pluginDirPath + "/org/hibersap/forge/plugin/hibersap-plugin/config/sap-connection.properties"; 
+		filePath = pluginDirPath + "/org/hibersap/forge/plugin/plugin-hibersap/config/sap-connection.properties"; 
 		final File file = new File(filePath);
 		final Properties properties = new Properties();
 		fileExists = file.exists();
