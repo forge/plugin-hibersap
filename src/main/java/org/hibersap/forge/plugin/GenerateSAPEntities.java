@@ -226,9 +226,12 @@ public class GenerateSAPEntities implements Plugin {
 				sessionManagerConfig.setContext(sapConnectionPropertiesManager.getSAPProperty("jca.context"));
 				sessionManagerConfig.setJcaConnectionFactory(sapConnectionPropertiesManager.getSAPProperty("jca.connection.factory"));
 				sessionManagerConfig.setJcaConnectionSpecFactory(sapConnectionPropertiesManager.getSAPProperty("jca.connectionspec.factory"));
-				sessionManagerConfig.setProperties(Collections.EMPTY_SET);//Nullpointer if set null
+				sessionManagerConfig.setProperties(Collections.EMPTY_SET);//TODO Nullpointer if set null
 			} else {
 				final DependencyFacet dependencyFacet = project.getFacet(DependencyFacet.class);
+				
+				shell.println();
+				shell.println("Checking and updating dependencies...");
 				
 				//Add hibersap-jco dependency
 				final Dependency hibersapJCo = DependencyBuilder.create()
