@@ -45,7 +45,7 @@ public class SAPConnectionPropertiesManager {
 	private final static String SAP_PROPERTIES_FILENAME = "sap-connection.properties";	
 	
 	/** The SAP connection properties **/
-	private final Properties sapConnection = new Properties();//TODO sorted properties
+	private final Properties sapConnection = new Properties();
 	
 	/** The path to store the individual SAP connection properties **/
 	private final String sapPropertiesStorePath;
