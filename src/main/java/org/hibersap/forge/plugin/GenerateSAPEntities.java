@@ -99,7 +99,7 @@ public class GenerateSAPEntities implements Plugin {
 	 */
 	@Command(value="list-properties", help="Lists all available connection properties")
 	public void listProperties() {
-		final Set<Entry<Object, Object>> properties = sapConnectionPropertiesManager.getAllSAPProperties();
+		final Set<Entry<Object, Object>> properties = sapConnectionPropertiesManager.getAllSAPProperties();//TODO sort entries
 		
 		for(final Entry<Object, Object> property : properties) {
 			shell.println(property.getKey() + "=" + property.getValue());
