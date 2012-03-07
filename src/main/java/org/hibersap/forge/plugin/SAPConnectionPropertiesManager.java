@@ -146,7 +146,7 @@ public class SAPConnectionPropertiesManager {
 	 * @return the JCo SAP connection properties
 	 */
 	public Set<Entry<Object, Object>> getSAPJcoProperties() {
-		//New Set necessary, because the sapConnection properties shall not be affected
+		//New Set necessary, because the sapConnection properties should not be affected
 		final Set<Entry<Object, Object>> jco = new HashSet<Entry<Object,Object>>(sapConnection.entrySet());
 		final FilterCollection filter = new FilterCollection(jco, "jco", "context");
 		
