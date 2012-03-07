@@ -33,6 +33,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 
 import org.hibersap.configuration.AnnotationConfiguration;
+import org.hibersap.configuration.xml.Property;
 import org.hibersap.configuration.xml.SessionManagerConfig;
 import org.hibersap.forge.plugin.exception.SessionManagerDuplicateException;
 import org.hibersap.forge.plugin.manager.HibersapXMLManager;
@@ -233,7 +234,7 @@ public class GenerateSAPEntities implements Plugin {
 				sessionManagerConfig.setContext(sapConnectionPropertiesManager.getSAPProperty("jca.context"));
 				sessionManagerConfig.setJcaConnectionFactory(sapConnectionPropertiesManager.getSAPProperty("jca.connection.factory"));
 				sessionManagerConfig.setJcaConnectionSpecFactory(sapConnectionPropertiesManager.getSAPProperty("jca.connectionspec.factory"));
-				sessionManagerConfig.setProperties(Collections.EMPTY_SET);//Nullpointer if set null
+				sessionManagerConfig.setProperties(Collections.<Property> emptySet());//Set properties empty; Nullpointer if set null
 			} else {
 				final DependencyFacet dependencyFacet = project.getFacet(DependencyFacet.class);
 				

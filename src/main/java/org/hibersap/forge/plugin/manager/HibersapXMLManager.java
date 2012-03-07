@@ -113,8 +113,11 @@ public class HibersapXMLManager {
 	 * @param sessionManagerConfig - the session manager configuration
 	 */
 	private void prepareSessionManager(final SessionManagerConfig sessionManagerConfig) {
-		sessionManagerConfig.setExecutionInterceptorClasses(Collections.EMPTY_LIST); //TODO Nullpointer if set null
-		sessionManagerConfig.setBapiInterceptorClasses(Collections.EMPTY_LIST); //TODO Nullpointer if set null
+		//Set interceptor classes empty; Nullpointer if set null
+		sessionManagerConfig.setExecutionInterceptorClasses(Collections.<String> emptyList());
+		//Set BAPI interceptor classes empty; Nullpointer if set null
+		sessionManagerConfig.setBapiInterceptorClasses(Collections.<String> emptyList());
+		//Set calidation mode null
 		sessionManagerConfig.setValidationMode(null);
 	}
 	
