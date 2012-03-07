@@ -107,7 +107,7 @@ public class GenerateSAPEntities implements Plugin {
 	 */
 	@Command(value="list-properties", help="Lists all available connection properties")
 	public void listProperties() {
-		final Set<Entry<Object, Object>> properties = sapConnectionPropertiesManager.getAllSAPProperties();
+		final Set<Entry<Object, Object>> properties = sapConnectionPropertiesManager.getAllSAPProperties();//TODO sort entries
 		
 		for(final Entry<Object, Object> property : properties) {
 			shell.println(property.getKey() + "=" + property.getValue());
@@ -237,6 +237,9 @@ public class GenerateSAPEntities implements Plugin {
 				sessionManagerConfig.setProperties(Collections.<Property> emptySet());//Set properties empty; Nullpointer if set null
 			} else {
 				final DependencyFacet dependencyFacet = project.getFacet(DependencyFacet.class);
+				
+				shell.println();
+				shell.println("Checking and updating dependencies...");
 				
 				//Add hibersap-jco dependency
 				final Dependency hibersapJCo = DependencyBuilder.create()
