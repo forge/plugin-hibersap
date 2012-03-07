@@ -17,7 +17,7 @@
  * with the Forge Hibersap Plugin. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hibersap.forge.plugin;
+package org.hibersap.forge.plugin.manger;
 
 import static org.junit.Assert.assertEquals;
 
@@ -27,6 +27,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import org.hibersap.forge.plugin.manager.SAPConnectionPropertiesManager;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

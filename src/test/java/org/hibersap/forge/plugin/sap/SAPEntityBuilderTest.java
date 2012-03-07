@@ -17,7 +17,7 @@
  * with the Forge Hibersap Plugin. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hibersap.forge.plugin;
+package org.hibersap.forge.plugin.sap;
 
 import org.hibersap.annotations.Bapi;
 import org.hibersap.annotations.Export;
@@ -25,6 +25,7 @@ import org.hibersap.annotations.Import;
 import org.hibersap.annotations.Parameter;
 import org.hibersap.annotations.ParameterType;
 import org.hibersap.annotations.Table;
+import org.hibersap.forge.plugin.sap.SAPEntityBuilder;
 import org.hibersap.mapping.model.BapiMapping;
 import org.hibersap.mapping.model.FieldMapping;
 import org.hibersap.mapping.model.StructureMapping;

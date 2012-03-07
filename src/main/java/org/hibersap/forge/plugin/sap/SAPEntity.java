@@ -17,7 +17,7 @@
  * with the Forge Hibersap Plugin. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hibersap.forge.plugin;
+package org.hibersap.forge.plugin.sap;
 
 import java.util.HashSet;
 import java.util.Set;

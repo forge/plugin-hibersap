@@ -34,6 +34,13 @@ import javax.xml.transform.TransformerException;
 
 import org.hibersap.configuration.AnnotationConfiguration;
 import org.hibersap.configuration.xml.SessionManagerConfig;
+import org.hibersap.forge.plugin.exception.SessionManagerDuplicateException;
+import org.hibersap.forge.plugin.manager.HibersapXMLManager;
+import org.hibersap.forge.plugin.manager.SAPConnectionPropertiesManager;
+import org.hibersap.forge.plugin.sap.FunctionModuleSearch;
+import org.hibersap.forge.plugin.sap.SAPEntity;
+import org.hibersap.forge.plugin.sap.SAPEntityBuilder;
+import org.hibersap.forge.plugin.util.Utils;
 import org.hibersap.generation.bapi.ReverseBapiMapper;
 import org.hibersap.mapping.model.BapiMapping;
 import org.hibersap.session.Session;

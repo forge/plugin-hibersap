@@ -17,10 +17,11 @@
  * with the Forge Hibersap Plugin. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hibersap.forge.plugin;
+package org.hibersap.forge.plugin.util;
 
 import static org.junit.Assert.assertEquals;
 
+import org.hibersap.forge.plugin.util.Utils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;

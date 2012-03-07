@@ -17,7 +17,7 @@
  * with the Forge Hibersap Plugin. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hibersap.forge.plugin;
+package org.hibersap.forge.plugin.manger;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -31,6 +31,8 @@ import java.util.Set;
 import org.hibersap.configuration.xml.HibersapConfig;
 import org.hibersap.configuration.xml.HibersapJaxbXmlParser;
 import org.hibersap.configuration.xml.SessionManagerConfig;
+import org.hibersap.forge.plugin.manager.HibersapXMLManager;
+import org.hibersap.forge.plugin.sap.FunctionModuleSearch;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
