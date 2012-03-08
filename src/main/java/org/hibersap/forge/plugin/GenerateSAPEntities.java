@@ -37,8 +37,8 @@ import org.hibersap.configuration.xml.Property;
 import org.hibersap.configuration.xml.SessionManagerConfig;
 import org.hibersap.forge.plugin.exception.SessionManagerDuplicateException;
 import org.hibersap.forge.plugin.manager.HibersapXMLManager;
-import org.hibersap.forge.plugin.manager.SAPConnectionPropertiesManager;
-import org.hibersap.forge.plugin.sap.FunctionModuleSearch;
+import org.hibersap.forge.plugin.manager.ConnectionPropertiesManager;
+import org.hibersap.forge.plugin.sap.SAPFunctionModuleSearch;
 import org.hibersap.forge.plugin.sap.SAPEntity;
 import org.hibersap.forge.plugin.sap.SAPEntityBuilder;
 import org.hibersap.forge.plugin.util.Utils;
@@ -81,7 +81,7 @@ public class GenerateSAPEntities implements Plugin {
 	/** The Forge project **/
 	private final Project project;
 	/** The SAP connection properties **/
-	private final SAPConnectionPropertiesManager sapConnectionPropertiesManager;
+	private final ConnectionPropertiesManager sapConnectionPropertiesManager;
 
 	/**
 	 * Constructor - Instantiates the plugin 
@@ -97,7 +97,7 @@ public class GenerateSAPEntities implements Plugin {
 		
 		this.shell = shell;
 		this.project = project;
-		this.sapConnectionPropertiesManager = new SAPConnectionPropertiesManager(configDirPath);
+		this.sapConnectionPropertiesManager = new ConnectionPropertiesManager(configDirPath);
 	}
 	
 	/**
@@ -147,7 +147,7 @@ public class GenerateSAPEntities implements Plugin {
 		final SessionManagerConfig sessionManagerConfig = createSessionManagerConfig(); 
 		final AnnotationConfiguration configuration = new AnnotationConfiguration(sessionManagerConfig);
 		final SessionManager sessionManager = configuration.buildSessionManager();
-		final FunctionModuleSearch functionModuleSearch = new FunctionModuleSearch(namePattern, maxResults);
+		final SAPFunctionModuleSearch functionModuleSearch = new SAPFunctionModuleSearch(namePattern, maxResults);
 		final Session session =  sessionManager.openSession();
 		
 		try{
@@ -302,7 +302,7 @@ public class GenerateSAPEntities implements Plugin {
 		
 		sessionManagerConfig.setName(sapConnectionPropertiesManager.getSAPProperty("session-manager.name"));
 		// Setting JCo context is not necessary, because it's set by default when creating a new SessionManangerConfig object
-		sessionManagerConfig.addAnnotatedClass(FunctionModuleSearch.class);
+		sessionManagerConfig.addAnnotatedClass(SAPFunctionModuleSearch.class);
 		
 		final Set<Entry<Object, Object>> jcoConnectionProperties = sapConnectionPropertiesManager.getSAPJcoProperties();
 		

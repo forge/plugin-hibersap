@@ -32,7 +32,7 @@ import org.hibersap.configuration.xml.HibersapConfig;
 import org.hibersap.configuration.xml.HibersapJaxbXmlParser;
 import org.hibersap.configuration.xml.SessionManagerConfig;
 import org.hibersap.forge.plugin.manager.HibersapXMLManager;
-import org.hibersap.forge.plugin.sap.FunctionModuleSearch;
+import org.hibersap.forge.plugin.sap.SAPFunctionModuleSearch;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Rule;
@@ -85,7 +85,7 @@ public class HibersapXMLManagerTest {
 		final String sessionManagerName = "SM066";
 		final SessionManagerConfig sessionManagerConfig01 = new SessionManagerConfig(sessionManagerName);
 		
-		sessionManagerConfig01.addAnnotatedClass(FunctionModuleSearch.class);
+		sessionManagerConfig01.addAnnotatedClass(SAPFunctionModuleSearch.class);
 		manager.addSessionManager(sessionManagerConfig01);
 		
 		final SessionManagerConfig sessionManagerConfig02 = new SessionManagerConfig(sessionManagerName);
@@ -96,7 +96,7 @@ public class HibersapXMLManagerTest {
 		final Set<String> annotatedClasses = manager.getHibersapConfig().getSessionManager(sessionManagerName).getAnnotatedClasses();
 
 		assertTrue(annotatedClasses.contains(String.class.getName()));
-		assertFalse(annotatedClasses.contains(FunctionModuleSearch.class.getName()));
+		assertFalse(annotatedClasses.contains(SAPFunctionModuleSearch.class.getName()));
 	}
 
 	@Test
@@ -128,13 +128,13 @@ public class HibersapXMLManagerTest {
 		
 		manager.addSessionManager(sessionManagerConfig01);
 
-		sessionManagerConfig02.addAnnotatedClass(FunctionModuleSearch.class);
+		sessionManagerConfig02.addAnnotatedClass(SAPFunctionModuleSearch.class);
 		manager.updateSessionManager(sessionManagerName01, sessionManagerConfig02);
 
 		final Set<String> annotatedClasses = manager.getHibersapConfig().getSessionManager(sessionManagerName01).getAnnotatedClasses();
 		
 		assertTrue(annotatedClasses.size() == 1);
-		assertTrue(annotatedClasses.contains(FunctionModuleSearch.class.getName()));
+		assertTrue(annotatedClasses.contains(SAPFunctionModuleSearch.class.getName()));
 	}
 	
 	@Ignore

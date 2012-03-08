@@ -40,7 +40,7 @@ import org.hibersap.forge.plugin.util.Utils;
  * @author Max Schwaab
  *
  */
-public class SAPConnectionPropertiesManager {
+public class ConnectionPropertiesManager {
 	
 	/** The path to the default properties **/
 	private final static String DEFAULT_PROPERTIES_PATH = "/META-INF/";
@@ -61,7 +61,7 @@ public class SAPConnectionPropertiesManager {
 	 * @param storePath - path to store the SAP connection properties without filename
 	 * @throws IOException
 	 */
-	public SAPConnectionPropertiesManager(final String sapPropertiesStorePath) throws IOException {
+	public ConnectionPropertiesManager(final String sapPropertiesStorePath) throws IOException {
 		Utils.checkPath(sapPropertiesStorePath);
 		this.sapPropertiesStorePath = sapPropertiesStorePath;
 		
@@ -87,7 +87,7 @@ public class SAPConnectionPropertiesManager {
 	}
 	
 	/**
-	 * Reads the SAP connection properties from the given sapPropertiesStorePath (see {@link SAPConnectionPropertiesManager#setSAPPropertiesStorePath(String)})
+	 * Reads the SAP connection properties from the given sapPropertiesStorePath (see {@link ConnectionPropertiesManager#setSAPPropertiesStorePath(String)})
 	 * 
 	 * @throws IOException
 	 */
@@ -113,7 +113,7 @@ public class SAPConnectionPropertiesManager {
 	}
 
 	/**
-	 * Stores the SAP connection properties to the given sapPropertiesStorePath (see {@link SAPConnectionPropertiesManager#setSAPPropertiesStorePath(String)})
+	 * Stores the SAP connection properties to the given sapPropertiesStorePath (see {@link ConnectionPropertiesManager#setSAPPropertiesStorePath(String)})
 	 * 
 	 * @throws IOException 
 	 */

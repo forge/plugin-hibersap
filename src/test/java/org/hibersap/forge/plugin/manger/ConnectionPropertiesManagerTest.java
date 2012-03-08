@@ -27,7 +27,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.hibersap.forge.plugin.manager.SAPConnectionPropertiesManager;
+import org.hibersap.forge.plugin.manager.ConnectionPropertiesManager;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,9 +38,9 @@ import org.junit.rules.TemporaryFolder;
  * @author Max Schwaab
  *
  */
-public class SAPConnectionPropertiesManagerTest {
+public class ConnectionPropertiesManagerTest {
 
-	private SAPConnectionPropertiesManager manager;
+	private ConnectionPropertiesManager manager;
 	private String tempPath;
 	
 	@Rule
@@ -50,7 +50,7 @@ public class SAPConnectionPropertiesManagerTest {
 	public void init() throws Exception {
 		tempPath = folder.getRoot().getAbsolutePath() + "\\";
 		
-		manager = new SAPConnectionPropertiesManager(tempPath);
+		manager = new ConnectionPropertiesManager(tempPath);
 	}
 
 	@Test
@@ -81,7 +81,7 @@ public class SAPConnectionPropertiesManagerTest {
 		
 		setAndWriteProperty(propertyKey, propertyValue);
 		
-		manager = new SAPConnectionPropertiesManager(tempPath);
+		manager = new ConnectionPropertiesManager(tempPath);
 		
 		assertEquals(propertyValue, manager.getSAPProperty(propertyKey));
 	}
