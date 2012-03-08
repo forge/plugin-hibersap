@@ -36,7 +36,7 @@ import org.hibersap.annotations.Table;
  *
  */
 @Bapi(value = "RFC_READ_TABLE")
-public class FunctionModuleSearch {
+public class SAPFunctionModuleSearch {
 
 	@SuppressWarnings("unused")
 	@Import
@@ -68,7 +68,7 @@ public class FunctionModuleSearch {
 	 * @param functionNamePattern - The function name pattern. May contain wildcards (* or ?).
 	 * @param maxResults - Sets the maximum number of results. Set 0 for no limitation.
 	 */
-	public FunctionModuleSearch(final String functionNamePattern, final int maxResults) {
+	public SAPFunctionModuleSearch(final String functionNamePattern, final int maxResults) {
 		final String sapPattern = functionNamePattern.replaceAll("\\*", "%").replaceAll("\\?", "_");
 				
 		this.functionNamePattern = Collections.singletonList(new Option(sapPattern));
