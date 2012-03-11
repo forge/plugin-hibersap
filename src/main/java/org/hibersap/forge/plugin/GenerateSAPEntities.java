@@ -241,16 +241,14 @@ public class GenerateSAPEntities implements Plugin {
 			sessionManagerNameChoice = shell.promptChoiceTyped("Please choose a session manager", sessionManagerNames, newSessionManager);
 			if(xmlManager.sessionManagerNameExists(sessionManagerName)) {
 				shell.println();
-				
 				replace = shell.promptBoolean("\nSession manager " + sessionManagerName + " already exists.\nReplace session manager? [" + sessionManagerName + "]", false);
-				
+
 				if(replace) {
 					update = false;
 				} else {
 					update = true;
 				}
 			} else {
-//				xmlManager.addSessionManager(sessionManagerConfig);
 				update = false;
 				replace = false;
 				shell.println(messageBody + "added...");
@@ -282,19 +280,16 @@ public class GenerateSAPEntities implements Plugin {
 				handleDependencies(true);
 			}
 			
-		}
-		if(replace) {
 			xmlManager.addAndOverrideSessionManager(sessionManagerConfig);
-			shell.println();
-			shell.println(messageBody + "replaced...");
+			shell.println(messageBody + "added...");
 		}
+
 		if(update) {
 			xmlManager.updateSessionManager(sessionManagerName, sessionManagerConfig);
-//			shell.println();
 			shell.println(messageBody + "updated...");
 		}
+		
 		xmlManager.writeHibersapXML();
-//		shell.println();
 		shell.println("\nWrote configuration file [hibersap.xml]\n");
 	}
 	
