@@ -233,6 +233,7 @@ public class GenerateSAPEntities implements Plugin {
 		final String newSessionManager = "New session manager from current properties";
 		final String sessionManagerNameChoice;
 		final boolean update;
+		final boolean replace;
 		
 		if(!sessionManagerNames.isEmpty()) {
 			sessionManagerNames.add(newSessionManager);
@@ -243,24 +244,23 @@ public class GenerateSAPEntities implements Plugin {
 			if(xmlManager.sessionManagerNameExists(sessionManagerName)) {
 				shell.println();
 				
-				final boolean replace = shell.promptBoolean("\nSession manager " + sessionManagerName + " already exists.\nReplace session manager? [" + sessionManagerName + "]", false);
+				replace = shell.promptBoolean("\nSession manager " + sessionManagerName + " already exists.\nReplace session manager? [" + sessionManagerName + "]", false);
 				
 				if(replace) {
 					update = false;
-					xmlManager.addAndOverrideSessionManager(sessionManagerConfig);
-					shell.println();
-					shell.println(messageBody + "replaced...");
 				} else {
 					update = true;
 				}
 			} else {
 //				xmlManager.addSessionManager(sessionManagerConfig);
 				update = false;
+				replace = false;
 				shell.println(messageBody + "added...");
 			}
 		} else {
 			sessionManagerNameChoice = newSessionManager;
 			update = false;
+			replace = false;
 		}
 		
 		if(sessionManagerNameChoice.equals(newSessionManager)) {
@@ -285,8 +285,11 @@ public class GenerateSAPEntities implements Plugin {
 			}
 			
 		}
-		
-		
+		if(replace) {
+			xmlManager.addAndOverrideSessionManager(sessionManagerConfig);
+			shell.println();
+			shell.println(messageBody + "replaced...");
+		}
 		if(update) {
 			xmlManager.updateSessionManager(sessionManagerName, sessionManagerConfig);
 			shell.println();
