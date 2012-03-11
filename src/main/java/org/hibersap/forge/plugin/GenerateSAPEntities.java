@@ -237,9 +237,7 @@ public class GenerateSAPEntities implements Plugin {
 		
 		if(!sessionManagerNames.isEmpty()) {
 			sessionManagerNames.add(newSessionManager);
-			
 			shell.println();
-			
 			sessionManagerNameChoice = shell.promptChoiceTyped("Please choose a session manager", sessionManagerNames, newSessionManager);
 			if(xmlManager.sessionManagerNameExists(sessionManagerName)) {
 				shell.println();
@@ -263,7 +261,7 @@ public class GenerateSAPEntities implements Plugin {
 			replace = false;
 		}
 		
-		if(sessionManagerNameChoice.equals(newSessionManager)) {
+		if(!replace && sessionManagerNameChoice.equals(newSessionManager)) {
 			shell.println();
 			
 			final String adapter = shell.promptRegex("Would you like to use JCo or JCA adapter for the current session manager?\nLeave empty for default", "[jJ][cC][aAoO]", "JCo");//Boolean("\nSession manager " + sessionManagerName + " already exists.\nReplace session manager? [" + sessionManagerName + "]", false);
