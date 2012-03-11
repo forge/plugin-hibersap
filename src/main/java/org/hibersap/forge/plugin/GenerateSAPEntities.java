@@ -232,6 +232,7 @@ public class GenerateSAPEntities implements Plugin {
 		final List<String> sessionManagerNames = xmlManager.getSessionManagerNames();
 		final String newSessionManager = "New session manager from current properties";
 		final String sessionManagerNameChoice;
+		final boolean update;
 		
 		if(!sessionManagerNames.isEmpty()) {
 			sessionManagerNames.add(newSessionManager);
@@ -239,11 +240,29 @@ public class GenerateSAPEntities implements Plugin {
 			shell.println();
 			
 			sessionManagerNameChoice = shell.promptChoiceTyped("Please choose a session manager", sessionManagerNames, newSessionManager);
+			if(xmlManager.sessionManagerNameExists(sessionManagerName)) {
+				shell.println();
+				
+				final boolean replace = shell.promptBoolean("\nSession manager " + sessionManagerName + " already exists.\nReplace session manager? [" + sessionManagerName + "]", false);
+				
+				if(replace) {
+					update = false;
+					xmlManager.addAndOverrideSessionManager(sessionManagerConfig);
+					shell.println();
+					shell.println(messageBody + "replaced...");
+				} else {
+					update = true;
+				}
+			} else {
+//				xmlManager.addSessionManager(sessionManagerConfig);
+				update = false;
+				shell.println(messageBody + "added...");
+			}
 		} else {
 			sessionManagerNameChoice = newSessionManager;
+			update = false;
 		}
 		
-		final boolean update;
 		if(sessionManagerNameChoice.equals(newSessionManager)) {
 			shell.println();
 			
@@ -264,33 +283,12 @@ public class GenerateSAPEntities implements Plugin {
 				//Handle dependencies for JCo environment
 				handleDependencies(true);
 			}
-			//TODO Test!
-			if(!xmlManager.sessionManagerNameExists(sessionManagerName)) {
-				xmlManager.addSessionManager(sessionManagerConfig);
-				update = false;
-//				shell.println();
-				shell.println(messageBody + "added...");
-			} else {
-				shell.println();
-				final boolean replace = shell.promptBoolean("\nSession manager " + sessionManagerName + " already exists.\nReplace session manager? [" + sessionManagerName + "]", false);
-				
-				
-				if(replace) {
-					xmlManager.addAndOverrideSessionManager(sessionManagerConfig);
-					update = false;
-					shell.println();
-					shell.println(messageBody + "replaced...");
-				} else {
-					update = true;
-				}
-			}
 			
-		} else {
-			update = true;
 		}
 		
+		
 		if(update) {
-			xmlManager.updateSessionManager(sessionManagerNameChoice, sessionManagerConfig);
+			xmlManager.updateSessionManager(sessionManagerName, sessionManagerConfig);
 			shell.println();
 			shell.println(messageBody + "updated...");
 		}
