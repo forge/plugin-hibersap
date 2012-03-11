@@ -85,7 +85,8 @@ public class HibersapXMLManager {
 			throw new SessionManagerDuplicateException(sessionManagerConfig.getName());
 		}
 		
-		prepareSessionManager(sessionManagerConfig);
+//		prepareSessionManager(sessionManagerConfig);
+		sessionManagerConfig.setValidationMode(null);
 		
 		//Workaround because of hibersap bug/reference problem
 		final List<SessionManagerConfig> sessionManagers = hibersapConfig.getSessionManagers();
@@ -105,19 +106,19 @@ public class HibersapXMLManager {
 		addSessionManager(sessionManagerConfig);
 	}
 	
-	/**
-	 * Removes unwanted elements from the given session manager configuration
-	 * 
-	 * @param sessionManagerConfig - the session manager configuration
-	 */
-	private void prepareSessionManager(final SessionManagerConfig sessionManagerConfig) {
-//		//Set interceptor classes empty; Nullpointer if set null
-//		sessionManagerConfig.setExecutionInterceptorClasses(Collections.<String> emptyList());
-//		//Set BAPI interceptor classes empty; Nullpointer if set null
-//		sessionManagerConfig.setBapiInterceptorClasses(Collections.<String> emptyList());
-		//Set calidation mode null
-		sessionManagerConfig.setValidationMode(null);
-	}
+//	/**
+//	 * Removes unwanted elements from the given session manager configuration
+//	 * 
+//	 * @param sessionManagerConfig - the session manager configuration
+//	 */
+//	private void prepareSessionManager(final SessionManagerConfig sessionManagerConfig) {
+////		//Set interceptor classes empty; Nullpointer if set null
+////		sessionManagerConfig.setExecutionInterceptorClasses(Collections.<String> emptyList());
+////		//Set BAPI interceptor classes empty; Nullpointer if set null
+////		sessionManagerConfig.setBapiInterceptorClasses(Collections.<String> emptyList());
+//		//Set calidation mode null
+//		sessionManagerConfig.setValidationMode(null);
+//	}
 	
 	/**
 	 * Gets the session manager names of the current configuration
