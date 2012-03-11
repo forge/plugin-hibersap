@@ -38,6 +38,10 @@ Install sapjco3 jar to your local Maven repository from the command line:
 [--key] - The property key<br>
 [--value] - The property value
 
+[delete-property] - Deletes an existing property<br>
+[OPTIONS]<br>
+[--key] - The property key<br>
+
 [generate-sap-entities] - Defalt command; generates SAP entities from a SAP system<br>
 [OPTIONS]<br>
 [--name-pattern] - Pattern to search SAP function names. Use * and ? as wildcards.<br>
