@@ -23,10 +23,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -113,10 +111,10 @@ public class HibersapXMLManager {
 	 * @param sessionManagerConfig - the session manager configuration
 	 */
 	private void prepareSessionManager(final SessionManagerConfig sessionManagerConfig) {
-		//Set interceptor classes empty; Nullpointer if set null
-		sessionManagerConfig.setExecutionInterceptorClasses(Collections.<String> emptyList());
-		//Set BAPI interceptor classes empty; Nullpointer if set null
-		sessionManagerConfig.setBapiInterceptorClasses(Collections.<String> emptyList());
+//		//Set interceptor classes empty; Nullpointer if set null
+//		sessionManagerConfig.setExecutionInterceptorClasses(Collections.<String> emptyList());
+//		//Set BAPI interceptor classes empty; Nullpointer if set null
+//		sessionManagerConfig.setBapiInterceptorClasses(Collections.<String> emptyList());
 		//Set calidation mode null
 		sessionManagerConfig.setValidationMode(null);
 	}
@@ -223,8 +221,8 @@ public class HibersapXMLManager {
 	public void updateSessionManager(final String sessionManagerName, final SessionManagerConfig sessionManagerConfig) throws ClassNotFoundException {
 		final SessionManagerConfig sessionManager = hibersapConfig.getSessionManager(sessionManagerName);
 		
-		final Set<String> annotatedClasses = sessionManager.getAnnotatedClasses();
-		final Set<String> newAnnotatedClasses = sessionManagerConfig.getAnnotatedClasses();
+		final List<String> annotatedClasses = sessionManager.getAnnotatedClasses();
+		final List<String> newAnnotatedClasses = sessionManagerConfig.getAnnotatedClasses();
 		
 		for(final String newAnnotatedClassName : newAnnotatedClasses) {
 			if(!annotatedClasses.contains(newAnnotatedClassName)) {

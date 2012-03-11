@@ -202,12 +202,13 @@ public class GenerateSAPEntities implements Plugin {
 			}	
 			
 			final String bapiClassName = sapEntity.getBapiClass().getName();
-			sessionManagerConfig.setAnnotatedClasses(Collections.singleton(bapiClassName));
+			sessionManagerConfig.setAnnotatedClasses(Collections.singletonList(bapiClassName));
 			
 			handleConfiguration(sessionManagerConfig);
 		} else {
 			shell.println();
 			shell.println("Command canceled...");
+			shell.println();
 		}
 		
 	}
@@ -253,7 +254,7 @@ public class GenerateSAPEntities implements Plugin {
 				sessionManagerConfig.setContext(sapConnectionPropertiesManager.getSAPProperty("jca.context"));
 				sessionManagerConfig.setJcaConnectionFactory(sapConnectionPropertiesManager.getSAPProperty("jca.connection.factory"));
 				sessionManagerConfig.setJcaConnectionSpecFactory(sapConnectionPropertiesManager.getSAPProperty("jca.connectionspec.factory"));
-				sessionManagerConfig.setProperties(Collections.<Property> emptySet());//Set properties empty; Nullpointer if set null
+				sessionManagerConfig.setProperties(Collections.<Property> emptyList());//Set properties empty; Nullpointer if set null
 				//Handle dependencies for JCA environment
 				handleDependencies(false);
 			} else {

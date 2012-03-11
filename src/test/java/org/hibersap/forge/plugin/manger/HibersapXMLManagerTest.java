@@ -26,7 +26,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.hibersap.configuration.xml.HibersapConfig;
 import org.hibersap.configuration.xml.HibersapJaxbXmlParser;
@@ -93,7 +92,7 @@ public class HibersapXMLManagerTest {
 		sessionManagerConfig02.addAnnotatedClass(String.class);
 		manager.addAndOverrideSessionManager(sessionManagerConfig02);
 
-		final Set<String> annotatedClasses = manager.getHibersapConfig().getSessionManager(sessionManagerName).getAnnotatedClasses();
+		final List<String> annotatedClasses = manager.getHibersapConfig().getSessionManager(sessionManagerName).getAnnotatedClasses();
 
 		assertTrue(annotatedClasses.contains(String.class.getName()));
 		assertFalse(annotatedClasses.contains(SAPFunctionModuleSearch.class.getName()));
@@ -131,7 +130,7 @@ public class HibersapXMLManagerTest {
 		sessionManagerConfig02.addAnnotatedClass(SAPFunctionModuleSearch.class);
 		manager.updateSessionManager(sessionManagerName01, sessionManagerConfig02);
 
-		final Set<String> annotatedClasses = manager.getHibersapConfig().getSessionManager(sessionManagerName01).getAnnotatedClasses();
+		final List<String> annotatedClasses = manager.getHibersapConfig().getSessionManager(sessionManagerName01).getAnnotatedClasses();
 		
 		assertTrue(annotatedClasses.size() == 1);
 		assertTrue(annotatedClasses.contains(SAPFunctionModuleSearch.class.getName()));
