@@ -177,4 +177,13 @@ public class ConnectionPropertiesManager {
 		sapConnection.setProperty(key, value);
 	}
 	
+	/**
+	 * Deletes a SAP connection property
+	 * 
+	 * @param key - the property key
+	 */
+	public void deleteSAPProperty(final String key) {
+		sapConnection.remove(key);
+	}
+	
 }

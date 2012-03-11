@@ -122,8 +122,14 @@ public class GenerateSAPEntities implements Plugin {
 	 * @throws IOException 
 	 */
 	@Command(value="set-property", help="Sets a connection property")
-	public void setProperties(@Option(name="key", help="the property key") final String key, @Option(name="value", help="the property value") final String value) throws IOException {
+	public void setProperty(@Option(name="key", help="the property key") final String key, @Option(name="value", help="the property value") final String value) throws IOException {
 		sapConnectionPropertiesManager.setSAPProperty(key, value);
+		sapConnectionPropertiesManager.writeSAPProperties();
+	}
+	
+	@Command(value="delete-property", help="Deletes a connection property")
+	public void deleteProperty(@Option(name="key", help="the property key") final String key) throws IOException {
+		sapConnectionPropertiesManager.deleteSAPProperty(key);
 		sapConnectionPropertiesManager.writeSAPProperties();
 	}
 	
