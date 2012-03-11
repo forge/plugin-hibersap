@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.hibersap.forge.plugin</groupId>
     <artifactId>plugin-hibersap</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0-Beta01</version>
 
     <properties>
         <forge.api.version>1.0.0.Final</forge.api.version>
