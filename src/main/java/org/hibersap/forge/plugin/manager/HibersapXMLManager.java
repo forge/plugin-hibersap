@@ -183,30 +183,6 @@ public class HibersapXMLManager {
 	private HibersapConfig readHibersapXML(final File file) throws FileNotFoundException, JAXBException {
 		final HibersapJaxbXmlParser parser = new HibersapJaxbXmlParser();
 		final FileInputStream inputStream = new FileInputStream(file);
-		
-//		StringBuilder text = new StringBuilder();
-//	    String NL = System.getProperty("line.separator");
-//	    Scanner scanner = new Scanner(inputStream);
-//	    try {
-//	      while (scanner.hasNextLine()){
-//	        text.append(scanner.nextLine() + NL);
-//	      }
-//	    }
-//	    finally{
-//	      scanner.close();
-//	    }
-//		System.out.println(text);
-//	    
-//		final FileInputStream inputStream2 = new FileInputStream(file);
-//		final JAXBContext context = JAXBContext.newInstance(HibersapConfig.class, SessionManagerConfig.class, Property.class);
-//		
-//		final Unmarshaller unmarshaller = context.createUnmarshaller(); 
-//		final Object object = unmarshaller.unmarshal(inputStream);
-//		
-//		hibersapConfig = (HibersapConfig) object;
-		
-		//TODO Check for problem with Forge, test is working (see org.hibersap.forge.plugin.HibersapXMLManagerTest.readHibersapXML())
-		
 		final HibersapConfig hibersapConfig = parser.parseResource(inputStream, HIBERSAPXML_FILENAME);
 		
 		return hibersapConfig;
