@@ -186,12 +186,11 @@ public class GenerateSAPEntities implements Plugin {
 			java.saveJavaSource(javaClass);
 			shell.println("Created SAP entity [" + javaClass.getQualifiedName() + "]");
 		}	
-		handleDependencies();
 		
 		final String bapiClassName = sapEntity.getBapiClass().getName();
 		sessionManagerConfig.setAnnotatedClasses(Collections.singleton(bapiClassName));
 		
-		handleHibersapXML(sessionManagerConfig);
+		handleConfiguration(sessionManagerConfig);
 	}
 
 	/**
@@ -204,7 +203,7 @@ public class GenerateSAPEntities implements Plugin {
 	 * @throws ClassNotFoundException
 	 * @throws FileNotFoundException 
 	 */
-	private void handleHibersapXML(final SessionManagerConfig sessionManagerConfig) throws JAXBException, SessionManagerDuplicateException, ClassNotFoundException, FileNotFoundException {
+	private void handleConfiguration(final SessionManagerConfig sessionManagerConfig) throws JAXBException, SessionManagerDuplicateException, ClassNotFoundException, FileNotFoundException {
 		final DirectoryResource metaInfDir = project.getProjectRoot().getChildDirectory("src/main/resources/META-INF");		
 		final String metaInfDirPath = metaInfDir.getFullyQualifiedName() + "/";
 		final HibersapXMLManager xmlManager = new HibersapXMLManager(metaInfDirPath);
@@ -231,32 +230,21 @@ public class GenerateSAPEntities implements Plugin {
 			final String adapter = shell.promptRegex("Would you like to use JCo or JCA adapter for the current session manager?\nLeave empty for default", "[jJ][cC][aAoO]", "JCo");//Boolean("\nSession manager " + sessionManagerName + " already exists.\nReplace session manager? [" + sessionManagerName + "]", false);
 			
 			if(adapter.matches("[jJ][cC][aA]")) {
+				//Set session manager for JCA environment
 				sessionManagerConfig.setContext(sapConnectionPropertiesManager.getSAPProperty("jca.context"));
 				sessionManagerConfig.setJcaConnectionFactory(sapConnectionPropertiesManager.getSAPProperty("jca.connection.factory"));
 				sessionManagerConfig.setJcaConnectionSpecFactory(sapConnectionPropertiesManager.getSAPProperty("jca.connectionspec.factory"));
 				sessionManagerConfig.setProperties(Collections.<Property> emptySet());//Set properties empty; Nullpointer if set null
+				//Handle dependencies for JCA environment
+				handleDependencies(false);
 			} else {
-				final DependencyFacet dependencyFacet = project.getFacet(DependencyFacet.class);
-				
-				shell.println();
-				shell.println("Checking and updating dependencies...");
-				
-				//Add hibersap-jco dependency
-				final Dependency hibersapJCo = DependencyBuilder.create()
-						.setGroupId("org.hibersap")
-						.setArtifactId("hibersap-jco");
-				addDependency(dependencyFacet, hibersapJCo);
-				
-				//Add SAP JCo dependency
-				final Dependency sapJCo = DependencyBuilder.create()
-						.setGroupId("com.sap")
-						.setArtifactId("sap-jco");
-				addDependency(dependencyFacet, sapJCo);
-				
+				//Set session manager for JCo environment
 				sessionManagerConfig.setJcaConnectionFactory(null);
-				sessionManagerConfig.setJcaConnectionSpecFactory(null);			
+				sessionManagerConfig.setJcaConnectionSpecFactory(null);
+				//Handle dependencies for JCo environment
+				handleDependencies(true);
 			}
-			
+			//TODO Test!
 			if(!xmlManager.sessionManagerNameExists(sessionManagerName)) {
 				xmlManager.addSessionManager(sessionManagerConfig);
 				update = false;
@@ -275,7 +263,6 @@ public class GenerateSAPEntities implements Plugin {
 				} else {
 					update = true;
 				}
-				
 			}
 			
 		} else {
@@ -316,7 +303,7 @@ public class GenerateSAPEntities implements Plugin {
 	/**
 	 * Checks for the necessary Hibersap dependencies and add them to project pom.xml if necessary
 	 */
-	private void handleDependencies() {
+	private void handleDependencies(final boolean jco) {
 		final DependencyFacet dependencyFacet = project.getFacet(DependencyFacet.class);
 		
 		shell.println();
@@ -331,33 +318,31 @@ public class GenerateSAPEntities implements Plugin {
 				.setArtifactId("hibersap-core");
 		addDependency( dependencyFacet, hibersapCore );
 				
-		//TODO Check: Dependency handling swapped to handleHibersapXML
-		
-//		final Dependency hibersapJCo = DependencyBuilder.create()
-//				.setGroupId("org.hibersap")
-//				.setArtifactId("hibersap-jco");
-//		addDependency(dependencyFacet, hibersapJCo);
-	    
-//		//Add SAP JCo dependency
-//		final Dependency sapJCo = DependencyBuilder.create()
-//				.setGroupId("com.sap")
-//				.setArtifactId("sap-jco");
-//		addDependency(dependencyFacet, sapJCo);
-		
-		shell.println();
+		if(jco) {
+			//Add hibersap-jco dependency
+			final Dependency hibersapJCo = DependencyBuilder.create()
+					.setGroupId("org.hibersap")
+					.setArtifactId("hibersap-jco");
+			addDependency(dependencyFacet, hibersapJCo);
 			
-		//Check if user wants to use bean validation
-		final boolean useBeanValidation = shell.promptBoolean("Do you want to  use bean validation in your project?", false);
-			
-		if(useBeanValidation) {
-			//Add javax validation api for bean validation
-			final Dependency beanValidation = DependencyBuilder.create()
-					.setGroupId("javax.validation")
-					.setArtifactId("validation-api");
-			addDependency(dependencyFacet, beanValidation);
+			//Add SAP JCo dependency
+			final Dependency sapJCo = DependencyBuilder.create()
+					.setGroupId("com.sap")
+					.setArtifactId("sap-jco");
+			addDependency(dependencyFacet, sapJCo);
+		} else {
+			//Add hibersap-jca dependency
+			final Dependency hibersapJCA = DependencyBuilder.create()
+					.setGroupId("org.hibersap")
+					.setArtifactId("hibersap-jca");
+			addDependency(dependencyFacet, hibersapJCA);
 		}
 		
-		
+		//Add javax validation api for bean validation
+		final Dependency beanValidation = DependencyBuilder.create()
+				.setGroupId("javax.validation")
+				.setArtifactId("validation-api");
+		addDependency(dependencyFacet, beanValidation);
 	}
 
 	/**
@@ -368,6 +353,17 @@ public class GenerateSAPEntities implements Plugin {
 	 */
 	private void addDependency(final DependencyFacet dependencyFacet, final Dependency dependency) {
 		if(!dependencyFacet.hasDirectDependency(dependency)) {
+			if(dependency.getArtifactId().equals("validation-api")) {
+				shell.println();
+				
+				//Check if user wants to use bean validation
+				final boolean useBeanValidation = shell.promptBoolean("Do you want to  use bean validation in your project?", false);
+					
+				if(!useBeanValidation) {
+					return;
+				}
+			}
+			
 			shell.println();
 			
 			final List<Dependency> versions = dependencyFacet.resolveAvailableVersions(dependency);
