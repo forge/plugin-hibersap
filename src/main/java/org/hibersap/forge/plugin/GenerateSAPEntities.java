@@ -258,10 +258,10 @@ public class GenerateSAPEntities implements Plugin {
 		} else {
 			sessionManagerNameChoice = newSessionManager;
 			update = false;
-			replace = false;
+			replace = true;
 		}
 		
-		if(!replace && sessionManagerNameChoice.equals(newSessionManager)) {
+		if(replace && sessionManagerNameChoice.equals(newSessionManager)) {
 			shell.println();
 			
 			final String adapter = shell.promptRegex("Would you like to use JCo or JCA adapter for the current session manager?\nLeave empty for default", "[jJ][cC][aAoO]", "JCo");//Boolean("\nSession manager " + sessionManagerName + " already exists.\nReplace session manager? [" + sessionManagerName + "]", false);
@@ -290,7 +290,7 @@ public class GenerateSAPEntities implements Plugin {
 		}
 		if(update) {
 			xmlManager.updateSessionManager(sessionManagerName, sessionManagerConfig);
-			shell.println();
+//			shell.println();
 			shell.println(messageBody + "updated...");
 		}
 		xmlManager.writeHibersapXML();
