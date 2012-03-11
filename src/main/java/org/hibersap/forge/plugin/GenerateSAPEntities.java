@@ -127,6 +127,12 @@ public class GenerateSAPEntities implements Plugin {
 		sapConnectionPropertiesManager.writeSAPProperties();
 	}
 	
+	/**
+	 * Deletes a SAP connection property
+	 * 
+	 * @param key - the property key
+	 * @throws IOException
+	 */
 	@Command(value="delete-property", help="Deletes a connection property")
 	public void deleteProperty(@Option(name="key", help="the property key") final String key) throws IOException {
 		sapConnectionPropertiesManager.deleteSAPProperty(key);

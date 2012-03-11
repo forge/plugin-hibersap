@@ -114,6 +114,33 @@ public class GenerateSAPEntitiesTest extends AbstractShellTest {
 			outputStream.close();
 		}
 	}
+	
+	@Test
+	public void deleteProperty() throws Exception {
+		final String propertyOldValue;
+		final String propertyKey = "jco.client.sysnr";
+		final Properties properties = new Properties();
+		final InputStream inputStream01 = new FileInputStream(filePath);
+		
+		properties.load(inputStream01);
+		inputStream01.close();
+		propertyOldValue = properties.get(propertyKey).toString();
+		getShell().execute("generate-sap-entities delete-property --key " + propertyKey);
+		
+		final InputStream inputStream02 = new FileInputStream(filePath);
+		properties.clear();
+		properties.load(inputStream02);
+		inputStream02.close();
+		
+		assertEquals(null, properties.get(propertyKey));
+		
+		if(fileExists) {
+			final OutputStream outputStream = new FileOutputStream(filePath);
+			properties.setProperty(propertyKey, propertyOldValue);
+			properties.store(outputStream, "Forge hibersap-plugin\nSAP connection properties");
+			outputStream.close();
+		}
+	}
 
 	private void deleteSAPProperties(final File file) {
 		if(!file.getAbsolutePath().endsWith("plugins")) {
