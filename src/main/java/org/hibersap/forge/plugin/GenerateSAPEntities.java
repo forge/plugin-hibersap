@@ -168,41 +168,48 @@ public class GenerateSAPEntities implements Plugin {
 			session.close();
 		}
 		
-		final List<String> functionNames = functionModuleSearch.getFunctionNames();		
+		final List<String> functionNames = functionModuleSearch.getFunctionNames();
+		functionNames.add("Cancel");
 		final String functionName = shell.promptChoiceTyped("\nSelect a function to generate the necessary Java classes:", functionNames);
 		
-		final ReverseBapiMapper reverseBAPIMapper = new ReverseBapiMapper();
-		final BapiMapping functionMapping = reverseBAPIMapper.map(functionName, sessionManager);
+		if(!functionName.equals("Cancel")) {
+			final ReverseBapiMapper reverseBAPIMapper = new ReverseBapiMapper();
+			final BapiMapping functionMapping = reverseBAPIMapper.map(functionName, sessionManager);
+			
+			shell.println();
+			
+			final String defaultClassName = Utils.toCamelCase(functionMapping.getBapiName(), '_');
+			final String className = shell.prompt("Please enter a class name. Leave empty for default\n", defaultClassName);
+			
+			shell.println();
+			
+			final JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
+			final String defaultJavaPackage = java.getBasePackage() + ".hibersap";
+			final String javaPackage = shell.prompt("Please enter a Java package. Leave empty for default\n", defaultJavaPackage);
+			
+			final SAPEntityBuilder sapEntityBuilder = new SAPEntityBuilder();
+			sapEntityBuilder.createNew(className, javaPackage, functionMapping);
+			
+			final SAPEntity sapEntity = sapEntityBuilder.getSAPEntity();
+			final Set<JavaClass> javaClasses = sapEntity.getStructureClasses();
+			
+			javaClasses.add(sapEntity.getBapiClass());
+			shell.println();
+			
+			for(final JavaClass javaClass : javaClasses) {
+				java.saveJavaSource(javaClass);
+				shell.println("Created SAP entity [" + javaClass.getQualifiedName() + "]");
+			}	
+			
+			final String bapiClassName = sapEntity.getBapiClass().getName();
+			sessionManagerConfig.setAnnotatedClasses(Collections.singleton(bapiClassName));
+			
+			handleConfiguration(sessionManagerConfig);
+		} else {
+			shell.println();
+			shell.println("Command canceled...");
+		}
 		
-		shell.println();
-		
-		final String defaultClassName = Utils.toCamelCase(functionMapping.getBapiName(), '_');
-		final String className = shell.prompt("Please enter a class name. Leave empty for default\n", defaultClassName);
-		
-		shell.println();
-		
-		final JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
-		final String defaultJavaPackage = java.getBasePackage() + ".hibersap";
-		final String javaPackage = shell.prompt("Please enter a Java package. Leave empty for default\n", defaultJavaPackage);
-		
-		final SAPEntityBuilder sapEntityBuilder = new SAPEntityBuilder();
-		sapEntityBuilder.createNew(className, javaPackage, functionMapping);
-		
-		final SAPEntity sapEntity = sapEntityBuilder.getSAPEntity();
-		final Set<JavaClass> javaClasses = sapEntity.getStructureClasses();
-		
-		javaClasses.add(sapEntity.getBapiClass());
-		shell.println();
-		
-		for(final JavaClass javaClass : javaClasses) {
-			java.saveJavaSource(javaClass);
-			shell.println("Created SAP entity [" + javaClass.getQualifiedName() + "]");
-		}	
-		
-		final String bapiClassName = sapEntity.getBapiClass().getName();
-		sessionManagerConfig.setAnnotatedClasses(Collections.singleton(bapiClassName));
-		
-		handleConfiguration(sessionManagerConfig);
 	}
 
 	/**
