@@ -239,7 +239,7 @@ public class GenerateSAPEntities implements Plugin {
 			sessionManagerNames.add(newSessionManager);
 			shell.println();
 			sessionManagerNameChoice = shell.promptChoiceTyped("Please choose a session manager", sessionManagerNames, newSessionManager);
-			if(xmlManager.sessionManagerNameExists(sessionManagerName)) {
+			if(sessionManagerNameChoice.equals(newSessionManager) && xmlManager.sessionManagerNameExists(sessionManagerName)) {
 				shell.println();
 				replace = shell.promptBoolean("\nSession manager " + sessionManagerName + " already exists.\nReplace session manager? [" + sessionManagerName + "]", false);
 
@@ -249,9 +249,8 @@ public class GenerateSAPEntities implements Plugin {
 					update = true;
 				}
 			} else {
-				update = false;
+				update = true;
 				replace = false;
-				shell.println(messageBody + "added...");
 			}
 		} else {
 			sessionManagerNameChoice = newSessionManager;
