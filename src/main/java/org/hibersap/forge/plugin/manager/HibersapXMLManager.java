@@ -23,8 +23,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -197,16 +199,12 @@ public class HibersapXMLManager {
 	 */
 	public void updateSessionManager(final String sessionManagerName, final SessionManagerConfig sessionManagerConfig) throws ClassNotFoundException {
 		final SessionManagerConfig sessionManager = hibersapConfig.getSessionManager(sessionManagerName);
-		
 		final List<String> annotatedClasses = sessionManager.getAnnotatedClasses();
 		final List<String> newAnnotatedClasses = sessionManagerConfig.getAnnotatedClasses();
+		final Set<String> mergedAnnotatedClasses = new HashSet<String>(annotatedClasses);
 		
-		for(final String newAnnotatedClassName : newAnnotatedClasses) {
-			if(!annotatedClasses.contains(newAnnotatedClassName)) {
-				sessionManager.addAnnotatedClass(Class.forName(newAnnotatedClassName));
-			}
-		}
-		
+		mergedAnnotatedClasses.addAll(newAnnotatedClasses);
+		sessionManager.setAnnotatedClasses(new ArrayList<String>(mergedAnnotatedClasses));
 	}
 	
 //	public boolean sessionManagerDuplicate(final SessionManagerConfig sessManagerConfig) {
