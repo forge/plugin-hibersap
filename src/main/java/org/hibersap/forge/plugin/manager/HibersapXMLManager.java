@@ -87,7 +87,6 @@ public class HibersapXMLManager {
 			throw new SessionManagerDuplicateException(sessionManagerConfig.getName());
 		}
 		
-//		prepareSessionManager(sessionManagerConfig);
 		sessionManagerConfig.setValidationMode(null);
 		
 		//Workaround because of hibersap bug/reference problem
@@ -107,20 +106,6 @@ public class HibersapXMLManager {
 		}
 		addSessionManager(sessionManagerConfig);
 	}
-	
-//	/**
-//	 * Removes unwanted elements from the given session manager configuration
-//	 * 
-//	 * @param sessionManagerConfig - the session manager configuration
-//	 */
-//	private void prepareSessionManager(final SessionManagerConfig sessionManagerConfig) {
-////		//Set interceptor classes empty; Nullpointer if set null
-////		sessionManagerConfig.setExecutionInterceptorClasses(Collections.<String> emptyList());
-////		//Set BAPI interceptor classes empty; Nullpointer if set null
-////		sessionManagerConfig.setBapiInterceptorClasses(Collections.<String> emptyList());
-//		//Set calidation mode null
-//		sessionManagerConfig.setValidationMode(null);
-//	}
 	
 	/**
 	 * Gets the session manager names of the current configuration
@@ -186,6 +171,9 @@ public class HibersapXMLManager {
 		final HibersapJaxbXmlParser parser = new HibersapJaxbXmlParser();
 		final FileInputStream inputStream = new FileInputStream(file);
 		final HibersapConfig hibersapConfig = parser.parseResource(inputStream, HIBERSAPXML_FILENAME);
+		
+		//Initial jcaConnectionSpecFactory value will be set in SessionManagerConfig constructor, even if its not needed by Hibersap framework
+		//It's not a real problem, but the hibersap.xml won't be clean (like contains just needed values)
 		
 		return hibersapConfig;
 	}
