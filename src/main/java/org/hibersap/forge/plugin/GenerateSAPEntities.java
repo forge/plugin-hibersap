@@ -201,7 +201,7 @@ public class GenerateSAPEntities implements Plugin {
 				shell.println("Created SAP entity [" + javaClass.getQualifiedName() + "]");
 			}	
 			
-			final String bapiClassName = sapEntity.getBapiClass().getName();
+			final String bapiClassName = sapEntity.getBapiClass().getQualifiedName();
 			sessionManagerConfig.setAnnotatedClasses(Collections.singletonList(bapiClassName));
 			
 			handleConfiguration(sessionManagerConfig);
