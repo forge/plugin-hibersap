@@ -136,13 +136,11 @@ public class HibersapXMLManagerTest {
 		assertTrue(annotatedClasses.contains(SAPFunctionModuleSearch.class.getName()));
 	}
 	
-	@Ignore
 	@Test
 	public void readHibersapXML() throws Exception {
 		hibersapXMLStorePath = getClass().getResource("/META-INF/").getPath();
 		manager = new HibersapXMLManager(hibersapXMLStorePath);
 		
-		//TODO Check if there's a problem with Forge class loading
 		assertTrue(manager.sessionManagerNameExists("SM001"));
 	}
 
@@ -161,7 +159,7 @@ public class HibersapXMLManagerTest {
 		
 		inputStream.close();
 		
-		assertEquals(sessionManagerConfig, hibersapConfig.getSessionManagers().get(0));
+		assertEquals(sessionManagerConfig.getName(), hibersapConfig.getSessionManagers().get(0).getName());
 	}
 
 }
