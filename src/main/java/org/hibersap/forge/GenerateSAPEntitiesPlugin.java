@@ -17,7 +17,7 @@
  * with the Forge Hibersap Plugin. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hibersap.forge.plugin;
+package org.hibersap.forge;
 
 
 import java.io.FileNotFoundException;
@@ -35,13 +35,13 @@ import javax.xml.transform.TransformerException;
 import org.hibersap.configuration.AnnotationConfiguration;
 import org.hibersap.configuration.xml.Property;
 import org.hibersap.configuration.xml.SessionManagerConfig;
-import org.hibersap.forge.plugin.exception.SessionManagerDuplicateException;
-import org.hibersap.forge.plugin.manager.HibersapXMLManager;
-import org.hibersap.forge.plugin.manager.ConnectionPropertiesManager;
-import org.hibersap.forge.plugin.sap.SAPFunctionModuleSearch;
-import org.hibersap.forge.plugin.sap.SAPEntity;
-import org.hibersap.forge.plugin.sap.SAPEntityBuilder;
+import org.hibersap.forge.exception.SessionManagerDuplicateException;
+import org.hibersap.forge.manager.ConnectionPropertiesManager;
+import org.hibersap.forge.manager.HibersapXMLManager;
 import org.hibersap.forge.plugin.util.Utils;
+import org.hibersap.forge.sap.SAPEntity;
+import org.hibersap.forge.sap.SAPEntityBuilder;
+import org.hibersap.forge.sap.SAPFunctionModuleSearch;
 import org.hibersap.generation.bapi.ReverseBapiMapper;
 import org.hibersap.mapping.model.BapiMapping;
 import org.hibersap.session.Session;
@@ -71,7 +71,7 @@ import org.jboss.forge.shell.plugins.RequiresProject;
 @RequiresProject
 @Alias("generate-sap-entities")
 @Help("Generate entities from a SAP system.")
-public class GenerateSAPEntities implements Plugin {
+public class GenerateSAPEntitiesPlugin implements Plugin {
 	
 	/** The Hibersap repository URL **/
 	private final static String HIBERSAP_REPO_URL = "http://hibersap.svn.sourceforge.net/viewvc/hibersap/m2repo";
@@ -91,9 +91,9 @@ public class GenerateSAPEntities implements Plugin {
 	 * @throws IOException 
 	 */
 	@Inject
-	public GenerateSAPEntities(final Project project, final Shell shell) throws IOException {
+	public GenerateSAPEntitiesPlugin(final Project project, final Shell shell) throws IOException {
 		final String pluginDirPath  = shell.getEnvironment().getPluginDirectory().getFullyQualifiedName();
-		final String configDirPath = pluginDirPath + "/org/hibersap/forge/plugin/plugin-hibersap/config/";
+		final String configDirPath = pluginDirPath + "/org/hibersap/forge/plugin/hibersap-plugin/config/";
 		
 		this.shell = shell;
 		this.project = project;

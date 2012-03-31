@@ -17,7 +17,7 @@
  * with the Forge Hibersap Plugin. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hibersap.forge.plugin.manager;
+package org.hibersap.forge.manager;
 
 import java.io.File;
 import java.io.FileInputStream;

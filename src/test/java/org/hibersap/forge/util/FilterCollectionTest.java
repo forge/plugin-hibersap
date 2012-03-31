@@ -17,7 +17,7 @@
  * with the Forge Hibersap Plugin. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hibersap.forge.plugin.util;
+package org.hibersap.forge.util;
 
 import static org.junit.Assert.assertEquals;
 

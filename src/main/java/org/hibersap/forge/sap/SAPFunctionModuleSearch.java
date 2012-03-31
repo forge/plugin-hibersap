@@ -17,7 +17,7 @@
  * with the Forge Hibersap Plugin. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hibersap.forge.plugin.sap;
+package org.hibersap.forge.sap;
 
 import java.util.ArrayList;
 import java.util.Collections;

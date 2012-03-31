@@ -17,7 +17,7 @@
  * with the Forge Hibersap Plugin. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hibersap.forge.plugin.manager;
+package org.hibersap.forge.manager;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,7 +35,7 @@ import javax.xml.bind.Marshaller;
 import org.hibersap.configuration.xml.HibersapConfig;
 import org.hibersap.configuration.xml.HibersapJaxbXmlParser;
 import org.hibersap.configuration.xml.SessionManagerConfig;
-import org.hibersap.forge.plugin.exception.SessionManagerDuplicateException;
+import org.hibersap.forge.exception.SessionManagerDuplicateException;
 import org.hibersap.forge.plugin.util.Utils;
 
 /**

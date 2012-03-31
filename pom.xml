@@ -4,12 +4,12 @@
         xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
         
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.hibersap.forge.plugin</groupId>
-    <artifactId>plugin-hibersap</artifactId>
-    <version>1.0.0-Beta02</version>
+    <groupId>org.hibersap.forge</groupId>
+    <artifactId>hibersap-plugin</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
 
     <properties>
-        <forge.api.version>1.0.0.Final</forge.api.version>
+        <forge.api.version>1.0.2.Final</forge.api.version>
         <hibersap.version>1.1.0Beta02</hibersap.version>
         <validation-api.version>1.0.0.GA</validation-api.version>
         <jco.version>3.0.7</jco.version>
@@ -83,7 +83,7 @@
         </repository>
     </repositories>
     <build>
-        <finalName>plugin-hibersap</finalName>
+        <finalName>hibersap-plugin</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

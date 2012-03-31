@@ -17,20 +17,22 @@
  * with the Forge Hibersap Plugin. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hibersap.forge.plugin.exception;
+package org.hibersap.forge;
+
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.Extension;
 
 /**
- * Indicates that a session manager name is already in use in the Hibersap context
+ * Plugin loader
  * 
  * @author Max Schwaab
  *
  */
-public class SessionManagerDuplicateException extends Exception {
+public class Loader implements Extension {
 
-	private static final long serialVersionUID = 4484599590902696907L;
-	
-	public SessionManagerDuplicateException(final String sessionManagerName) {
-		super("Session manager name \"" + sessionManagerName + "\" is aready in use");
+	public void observes(@Observes BeforeBeanDiscovery event, BeanManager manager) {
+		event.addAnnotatedType(manager.createAnnotatedType(GenerateSAPEntitiesPlugin.class));
 	}
-
 }

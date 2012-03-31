@@ -17,7 +17,7 @@
  * with the Forge Hibersap Plugin. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.hibersap.forge.plugin;
+package org.hibersap.forge;
 
 import static org.junit.Assert.assertEquals;
 
@@ -29,6 +29,7 @@ import java.io.OutputStream;
 import java.util.Properties;
 
 //import org.jboss.arquillian.api.Deployment;
+import org.hibersap.forge.GenerateSAPEntitiesPlugin;
 import org.jboss.forge.test.AbstractShellTest;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.After;
@@ -51,13 +52,13 @@ public class GenerateSAPEntitiesTest extends AbstractShellTest {
 
 	@org.jboss.arquillian.container.test.api.Deployment
 	public static JavaArchive getDeployment() {
-		return AbstractShellTest.getDeployment().addPackages(true, GenerateSAPEntities.class.getPackage());
+		return AbstractShellTest.getDeployment().addPackages(true, GenerateSAPEntitiesPlugin.class.getPackage());
 	}
 
 	@Before
 	public void init() throws Exception {
 		pluginDirPath = getShell().getEnvironment().getPluginDirectory().getFullyQualifiedName();
-		filePath = pluginDirPath + "/org/hibersap/forge/plugin/plugin-hibersap/config/sap-connection.properties"; 
+		filePath = pluginDirPath + "/org/hibersap/forge/plugin/hibersap-plugin/config/sap-connection.properties"; 
 		final File file = new File(filePath);
 		final Properties properties = new Properties();
 		fileExists = file.exists();
