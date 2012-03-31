@@ -36,7 +36,7 @@ import org.hibersap.configuration.xml.HibersapConfig;
 import org.hibersap.configuration.xml.HibersapJaxbXmlParser;
 import org.hibersap.configuration.xml.SessionManagerConfig;
 import org.hibersap.forge.exception.SessionManagerDuplicateException;
-import org.hibersap.forge.plugin.util.Utils;
+import org.hibersap.forge.util.Utils;
 
 /**
  * Manager class for hibersap.xml configuration file

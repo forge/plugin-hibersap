@@ -29,8 +29,8 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.hibersap.forge.plugin.util.FilterCollection;
-import org.hibersap.forge.plugin.util.Utils;
+import org.hibersap.forge.util.FilterCollection;
+import org.hibersap.forge.util.Utils;
 
 /**
  * Manager class for Hibersap SAP connection properties

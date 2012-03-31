@@ -25,7 +25,6 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.hibersap.forge.plugin.util.FilterCollection;
 import org.junit.Before;
 import org.junit.Test;
 

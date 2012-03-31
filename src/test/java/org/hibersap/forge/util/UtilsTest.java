@@ -21,7 +21,6 @@ package org.hibersap.forge.util;
 
 import static org.junit.Assert.assertEquals;
 
-import org.hibersap.forge.plugin.util.Utils;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
