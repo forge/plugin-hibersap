@@ -39,18 +39,18 @@ import org.hibersap.forge.util.Utils;
  *
  */
 public class ConnectionPropertiesManager {
-	
+
 	/** The path to the default properties **/
 	private final static String DEFAULT_PROPERTIES_PATH = "/META-INF/";
 	/** The filename for the connection properties **/
-	private final static String SAP_PROPERTIES_FILENAME = "sap-connection.properties";	
-	
+	private final static String SAP_PROPERTIES_FILENAME = "sap-connection.properties";
+
 	/** The SAP connection properties **/
 	private final Properties sapConnection = new Properties();//TODO sorted properties
-	
+
 	/** The path to store the individual SAP connection properties **/
 	private final String sapPropertiesStorePath;
-	
+
 	/**
 	 * Constructor - Instantiates a new SAPConnectionPropertiesManager
 	 * 
@@ -62,37 +62,37 @@ public class ConnectionPropertiesManager {
 	public ConnectionPropertiesManager(final String sapPropertiesStorePath) throws IOException {
 		Utils.checkPath(sapPropertiesStorePath);
 		this.sapPropertiesStorePath = sapPropertiesStorePath;
-		
+
 		//Read or create SAP connection properties
-		final String filePath = sapPropertiesStorePath + SAP_PROPERTIES_FILENAME;
+		final String filePath = sapPropertiesStorePath + ConnectionPropertiesManager.SAP_PROPERTIES_FILENAME;
 		final File file = new File(filePath);
-		
-		if(file.exists()) {
+
+		if (file.exists()) {
 			readSAPProperties();
 		} else {
 			readDefaultSAPProperties();
 			writeSAPProperties();
 		}
 	}
-	
+
 	/**
 	 * Loads the default SAP connection properties
 	 * 
 	 * @throws IOException 
 	 */
 	private void readDefaultSAPProperties() throws IOException {
-		readSAPProperties(DEFAULT_PROPERTIES_PATH, true);
+		readSAPProperties(ConnectionPropertiesManager.DEFAULT_PROPERTIES_PATH, true);
 	}
-	
+
 	/**
 	 * Reads the SAP connection properties from the given sapPropertiesStorePath (see {@link ConnectionPropertiesManager#setSAPPropertiesStorePath(String)})
 	 * 
 	 * @throws IOException
 	 */
 	private void readSAPProperties() throws IOException {
-		readSAPProperties(sapPropertiesStorePath, false);
+		readSAPProperties(this.sapPropertiesStorePath, false);
 	}
-	
+
 	/**
 	 * Reads the SAP connection properties from the given path
 	 * 
@@ -101,12 +101,13 @@ public class ConnectionPropertiesManager {
 	 * @throws IOException 
 	 */
 	private void readSAPProperties(final String path, final boolean readDefault) throws IOException {
-		final String filePath = path + SAP_PROPERTIES_FILENAME;
-		final InputStream inputStream = readDefault ? getClass().getResourceAsStream(filePath) : new FileInputStream(filePath);
-		
+		final String filePath = path + ConnectionPropertiesManager.SAP_PROPERTIES_FILENAME;
+		final InputStream inputStream = readDefault ? getClass().getResourceAsStream(filePath) : new FileInputStream(
+				filePath);
+
 		this.sapConnection.clear();
 		this.sapConnection.load(inputStream);
-		
+
 		inputStream.close();
 	}
 
@@ -116,28 +117,28 @@ public class ConnectionPropertiesManager {
 	 * @throws IOException 
 	 */
 	public void writeSAPProperties() throws IOException {
-		final File file = new File(sapPropertiesStorePath + SAP_PROPERTIES_FILENAME);
-		final File fileDir = file.getParentFile();		
+		final File file = new File(this.sapPropertiesStorePath + ConnectionPropertiesManager.SAP_PROPERTIES_FILENAME);
+		final File fileDir = file.getParentFile();
 		final FileOutputStream outputStream;
-		
-		if(!fileDir.exists()) {
+
+		if (!fileDir.exists()) {
 			fileDir.mkdir();
-		}		
-		
+		}
+
 		outputStream = new FileOutputStream(file);
-		sapConnection.store(outputStream, "forge hibersap plugin \nSAP connection properties");
+		this.sapConnection.store(outputStream, "forge hibersap plugin \nSAP connection properties");
 		outputStream.close();
 	}
-	
+
 	/**
 	 * Gets all SAP connection properties
 	 * 
 	 * @return the SAP connection properties
 	 */
 	public Set<Entry<Object, Object>> getAllSAPProperties() {
-		return sapConnection.entrySet();
+		return this.sapConnection.entrySet();
 	}
-	
+
 	/**
 	 * Gets the property value for the given property key
 	 * 
@@ -145,11 +146,11 @@ public class ConnectionPropertiesManager {
 	 * @return the value belonging to the given key
 	 */
 	public String getSAPProperty(final String key) {
-		final String property = sapConnection.getProperty(key);
-		
+		final String property = this.sapConnection.getProperty(key);
+
 		return property;
 	}
-	
+
 	/**
 	 * Sets a SAP connection property
 	 * 
@@ -157,16 +158,16 @@ public class ConnectionPropertiesManager {
 	 * @param value - the property value
 	 */
 	public void setSAPProperty(final String key, final String value) {
-		sapConnection.setProperty(key, value);
+		this.sapConnection.setProperty(key, value);
 	}
-	
+
 	/**
 	 * Deletes a SAP connection property
 	 * 
 	 * @param key - the property key
 	 */
 	public void deleteSAPProperty(final String key) {
-		sapConnection.remove(key);
+		this.sapConnection.remove(key);
 	}
-	
+
 }

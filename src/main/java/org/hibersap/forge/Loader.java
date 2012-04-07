@@ -28,11 +28,11 @@ import javax.enterprise.inject.spi.Extension;
  * Plugin loader
  * 
  * @author Max Schwaab
- *
+ * 
  */
 public class Loader implements Extension {
 
-	public void observes(@Observes BeforeBeanDiscovery event, BeanManager manager) {
+	public void observes(@Observes final BeforeBeanDiscovery event, final BeanManager manager) {
 		event.addAnnotatedType(manager.createAnnotatedType(GenerateSAPEntitiesPlugin.class));
 	}
 }

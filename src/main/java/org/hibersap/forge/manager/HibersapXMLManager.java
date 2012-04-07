@@ -49,12 +49,12 @@ import org.hibersap.forge.util.Utils;
 public class HibersapXMLManager {
 
 	/** The hibersap.xml filename **/
-	private final static String  HIBERSAPXML_FILENAME = "hibersap.xml";
+	private final static String HIBERSAPXML_FILENAME = "hibersap.xml";
 	/** The path to store the hibersap.xml file **/
 	private final String hibersapXMLStorePath;
 	/** The Hibersap configuration **/
 	private final HibersapConfig hibersapConfig;
-	
+
 	/**
 	 * Constructor - Instantiates a new HibersapXMLManager 
 	 * 
@@ -65,64 +65,66 @@ public class HibersapXMLManager {
 	public HibersapXMLManager(final String hibersapXMLStorePath) throws JAXBException, FileNotFoundException {
 		Utils.checkPath(hibersapXMLStorePath);
 		this.hibersapXMLStorePath = hibersapXMLStorePath;
-		
-		final String filePath = hibersapXMLStorePath + HIBERSAPXML_FILENAME;
+
+		final String filePath = hibersapXMLStorePath + HibersapXMLManager.HIBERSAPXML_FILENAME;
 		final File file = new File(filePath);
-		
-		if(file.exists()) {
+
+		if (file.exists()) {
 			this.hibersapConfig = readHibersapXML(file);
 		} else {
 			this.hibersapConfig = new HibersapConfig();
 		}
 	}
-	
+
 	/**
 	 * Adds a session manager to the current Hibersap configuration
 	 * 
 	 * @param sessionManagerConfig - the session manager configuration
 	 * @throws SessionManagerDuplicateException
 	 */
-	public void addSessionManager(final SessionManagerConfig sessionManagerConfig) throws SessionManagerDuplicateException {
-		if(sessionManagerNameExists(sessionManagerConfig.getName())) {
+	public void addSessionManager(final SessionManagerConfig sessionManagerConfig)
+			throws SessionManagerDuplicateException {
+		if (sessionManagerNameExists(sessionManagerConfig.getName())) {
 			throw new SessionManagerDuplicateException(sessionManagerConfig.getName());
 		}
-		
+
 		sessionManagerConfig.setValidationMode(null);
-		
+
 		//Workaround because of hibersap bug/reference problem
-		final List<SessionManagerConfig> sessionManagers = hibersapConfig.getSessionManagers();
+		final List<SessionManagerConfig> sessionManagers = this.hibersapConfig.getSessionManagers();
 		sessionManagers.add(sessionManagerConfig);
 	}
-	
+
 	/**
 	 * Adds a session manager to the current Hibersap configuration and removes existing session manager with the same name
 	 * 
 	 * @param sessionManagerConfig - the session manager configuration
 	 * @throws SessionManagerDuplicateException
 	 */
-	public void addAndOverrideSessionManager(final SessionManagerConfig sessionManagerConfig) throws SessionManagerDuplicateException {
-		if(sessionManagerNameExists(sessionManagerConfig.getName())) {
+	public void addAndOverrideSessionManager(final SessionManagerConfig sessionManagerConfig)
+			throws SessionManagerDuplicateException {
+		if (sessionManagerNameExists(sessionManagerConfig.getName())) {
 			removeSessionManager(sessionManagerConfig.getName());
 		}
 		addSessionManager(sessionManagerConfig);
 	}
-	
+
 	/**
 	 * Gets the session manager names of the current configuration
 	 * 
 	 * @return - the session manager names
 	 */
 	public List<String> getSessionManagerNames() {
-		final List<SessionManagerConfig> sessionManagers = hibersapConfig.getSessionManagers();
+		final List<SessionManagerConfig> sessionManagers = this.hibersapConfig.getSessionManagers();
 		final List<String> sessionManagerNames = new ArrayList<String>();
-		
-		for(final SessionManagerConfig sessionManager : sessionManagers) {
+
+		for (final SessionManagerConfig sessionManager : sessionManagers) {
 			sessionManagerNames.add(sessionManager.getName());
 		}
-		
-		return sessionManagerNames; 
+
+		return sessionManagerNames;
 	}
-	
+
 	/**
 	 * Checks if given session manager name already exists in current configuration
 	 * 
@@ -130,35 +132,35 @@ public class HibersapXMLManager {
 	 * @return - the examination result
 	 */
 	public boolean sessionManagerNameExists(final String name) {
-		final List<SessionManagerConfig> sessionManagers = hibersapConfig.getSessionManagers();
-		
-		for(final SessionManagerConfig sessionManager : sessionManagers) {
-			if(sessionManager.getName().equals(name)) {
-				
+		final List<SessionManagerConfig> sessionManagers = this.hibersapConfig.getSessionManagers();
+
+		for (final SessionManagerConfig sessionManager : sessionManagers) {
+			if (sessionManager.getName().equals(name)) {
+
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
+
 	/**
 	 * Removes the session manager with the given name from the current configuration
 	 * 
 	 * @param sessionManagerName - the session manager name
 	 */
 	private void removeSessionManager(final String sessionManagerName) {
-		final List<SessionManagerConfig> sessionManagers = hibersapConfig.getSessionManagers();
+		final List<SessionManagerConfig> sessionManagers = this.hibersapConfig.getSessionManagers();
 		final Iterator<SessionManagerConfig> iterator = sessionManagers.iterator();
-		
-		while(iterator.hasNext()) {
+
+		while (iterator.hasNext()) {
 			final SessionManagerConfig sessionManager = iterator.next();
-			if(sessionManager.getName().equals(sessionManagerName)) {
+			if (sessionManager.getName().equals(sessionManagerName)) {
 				iterator.remove();
 			}
 		}
 	}
-	
+
 	/**
 	 * Reads the hibersap.xml from the given file
 	 * 
@@ -170,14 +172,15 @@ public class HibersapXMLManager {
 	private HibersapConfig readHibersapXML(final File file) throws FileNotFoundException, JAXBException {
 		final HibersapJaxbXmlParser parser = new HibersapJaxbXmlParser();
 		final FileInputStream inputStream = new FileInputStream(file);
-		final HibersapConfig hibersapConfig = parser.parseResource(inputStream, HIBERSAPXML_FILENAME);
-		
+		final HibersapConfig hibersapConfig = parser
+				.parseResource(inputStream, HibersapXMLManager.HIBERSAPXML_FILENAME);
+
 		//Initial jcaConnectionSpecFactory value will be set in SessionManagerConfig constructor, even if its not needed by Hibersap framework
 		//It's not a real problem, but the hibersap.xml won't be clean (like contains just needed values)
-		
+
 		return hibersapConfig;
 	}
-	
+
 	/**
 	 * Updates annotated classes of the session manager with the given name with the annotated classes from the given session manager configuration 
 	 * 
@@ -185,16 +188,17 @@ public class HibersapXMLManager {
 	 * @param sessionManagerConfig - the session manager configuration to update from
 	 * @throws ClassNotFoundException
 	 */
-	public void updateSessionManager(final String sessionManagerName, final SessionManagerConfig sessionManagerConfig) throws ClassNotFoundException {
-		final SessionManagerConfig sessionManager = hibersapConfig.getSessionManager(sessionManagerName);
+	public void updateSessionManager(final String sessionManagerName, final SessionManagerConfig sessionManagerConfig)
+			throws ClassNotFoundException {
+		final SessionManagerConfig sessionManager = this.hibersapConfig.getSessionManager(sessionManagerName);
 		final List<String> annotatedClasses = sessionManager.getAnnotatedClasses();
 		final List<String> newAnnotatedClasses = sessionManagerConfig.getAnnotatedClasses();
 		final Set<String> mergedAnnotatedClasses = new HashSet<String>(annotatedClasses);
-		
+
 		mergedAnnotatedClasses.addAll(newAnnotatedClasses);
 		sessionManager.setAnnotatedClasses(new ArrayList<String>(mergedAnnotatedClasses));
 	}
-	
+
 //	public boolean sessionManagerDuplicate(final SessionManagerConfig sessManagerConfig) {
 //		final List<SessionManagerConfig> sessionManagers = hibersapConfig.getSessionManagers();
 //		
@@ -206,7 +210,7 @@ public class HibersapXMLManager {
 //		
 //		return false;
 //	}
-	
+
 	/**
 	 * Writes hibersap.xml file to the stored path
 	 * 
@@ -216,9 +220,9 @@ public class HibersapXMLManager {
 	public void writeHibersapXML() throws JAXBException {
 		final JAXBContext context = JAXBContext.newInstance(HibersapConfig.class);
 		final Marshaller marshaller = context.createMarshaller();
-		final File file = new File(hibersapXMLStorePath + HIBERSAPXML_FILENAME);
-		
-		marshaller.marshal(hibersapConfig, file);
+		final File file = new File(this.hibersapXMLStorePath + HibersapXMLManager.HIBERSAPXML_FILENAME);
+
+		marshaller.marshal(this.hibersapConfig, file);
 	}
 
 	/**
@@ -227,7 +231,7 @@ public class HibersapXMLManager {
 	 * @return - the Hibersap configuration
 	 */
 	public HibersapConfig getHibersapConfig() {
-		return hibersapConfig;
+		return this.hibersapConfig;
 	}
 
 }

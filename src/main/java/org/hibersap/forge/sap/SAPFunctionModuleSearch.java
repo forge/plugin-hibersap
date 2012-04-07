@@ -42,22 +42,22 @@ public class SAPFunctionModuleSearch {
 	@Import
 	@Parameter(value = "QUERY_TABLE")
 	private final String tableName = "TFDIR";
-	
+
 	@SuppressWarnings("unused")
 	@Import
 	@Parameter(value = "ROWCOUNT")
 	private final int rowCount;
-		
+
 	@SuppressWarnings("unused")
 	@Table
 	@Parameter(value = "OPTIONS")
 	private final List<Option> functionNamePattern;
-	
+
 	@SuppressWarnings("unused")
 	@Table
 	@Parameter(value = "FIELDS")
 	private final List<Field> fields = Collections.singletonList(new Field());
-	
+
 	@Table
 	@Parameter(value = "DATA")
 	private List<FunctionModule> functionModules;
@@ -70,7 +70,7 @@ public class SAPFunctionModuleSearch {
 	 */
 	public SAPFunctionModuleSearch(final String functionNamePattern, final int maxResults) {
 		final String sapPattern = functionNamePattern.replaceAll("\\*", "%").replaceAll("\\?", "_");
-				
+
 		this.functionNamePattern = Collections.singletonList(new Option(sapPattern));
 		this.rowCount = maxResults;
 	}
@@ -82,62 +82,62 @@ public class SAPFunctionModuleSearch {
 	 */
 	public List<String> getFunctionNames() {
 		final List<String> functionName = new ArrayList<String>();
-		for(FunctionModule element : this.functionModules) {
+		for (final FunctionModule element : this.functionModules) {
 			functionName.add(element.name);
 		}
-		
+
 		return functionName;
 	}
-	
+
 	/*
 	 * A class mapping the option data type of SAP
 	 */
 	@BapiStructure
 	private static class Option {
-		
+
 		@SuppressWarnings("unused")
 		@Parameter(value = "TEXT")
 		private final String optionsQueryString;
-		
+
 		@SuppressWarnings("unused")
 		private Option() {
 			this.optionsQueryString = "";
 		}
-		
+
 		public Option(final String functionNamePattern) {
 			this.optionsQueryString = String.format("FMODE EQ 'R' AND FUNCNAME LIKE '%s'", functionNamePattern);
 		}
-		
-	}
 
+	}
 
 	/*
 	 * A class mapping the field data type of SAP
 	 */
 	@BapiStructure
 	private static class Field {
-		
+
 		@SuppressWarnings("unused")
 		@Parameter(value = "FIELDNAME")
 		private final String name = "FUNCNAME";
-		
-		private Field() {}
-		
+
+		private Field() {
+		}
+
 	}
-	
+
 	/*
 	 * A class mapping the function module data type of SAP
 	 */
 	@BapiStructure
 	private static class FunctionModule {
-		
+
 		@Parameter(value = "WA")
 		private final String name;
-		
+
 		private FunctionModule() {
 			this.name = "";
 		}
 
 	}
-	
+
 }

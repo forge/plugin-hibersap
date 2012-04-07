@@ -33,12 +33,12 @@ import org.jboss.forge.parser.java.JavaClass;
  *
  */
 public class SAPEntity {
-	
+
 	/** The BAPI class **/
 	private final JavaClass bapiClass;
 	/** The structure classes set **/
 	private final Set<JavaClass> structureClasses = new HashSet<JavaClass>();
-	
+
 	/**
 	 * Constructor - Instantiates a new SAPEntity
 	 * 
@@ -54,7 +54,7 @@ public class SAPEntity {
 	 * @return the BAPI class
 	 */
 	public JavaClass getBapiClass() {
-		return bapiClass;
+		return this.bapiClass;
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class SAPEntity {
 	 * @return the structure classes set
 	 */
 	public Set<JavaClass> getStructureClasses() {
-		return structureClasses;
+		return this.structureClasses;
 	}
 
 	/*
@@ -74,8 +74,8 @@ public class SAPEntity {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((bapiClass == null) ? 0 : bapiClass.hashCode());
-		result = prime * result + ((structureClasses == null) ? 0 : structureClasses.hashCode());
+		result = prime * result + ((this.bapiClass == null) ? 0 : this.bapiClass.hashCode());
+		result = prime * result + ((this.structureClasses == null) ? 0 : this.structureClasses.hashCode());
 		return result;
 	}
 
@@ -85,17 +85,17 @@ public class SAPEntity {
 	 */
 	@Override
 	public boolean equals(final Object object) {
-		if(object instanceof SAPEntity) {
+		if (object instanceof SAPEntity) {
 			final SAPEntity toCompare = (SAPEntity) object;
 			final JavaClass toCompareBapiClass = toCompare.getBapiClass();
 			final Set<JavaClass> toCompareStructureClasses = toCompare.getStructureClasses();
-			
-			return bapiClass.equals(toCompareBapiClass) && structureClasses.equals(toCompareStructureClasses); 
+
+			return this.bapiClass.equals(toCompareBapiClass) && this.structureClasses.equals(toCompareStructureClasses);
 		}
-		
+
 		return false;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -103,14 +103,14 @@ public class SAPEntity {
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("BAPI Class \"" + bapiClass.getName() + "\":\n");
-		builder.append(bapiClass.toString() + "\n\n");
-		for(final JavaClass structureClass : structureClasses) {
+		builder.append("BAPI Class \"" + this.bapiClass.getName() + "\":\n");
+		builder.append(this.bapiClass.toString() + "\n\n");
+		for (final JavaClass structureClass : this.structureClasses) {
 			builder.append("Structure Class \"" + structureClass.getName() + "\":\n");
 			builder.append(structureClass.toString() + "\n\n");
 		}
-				
+
 		return builder.toString();
 	}
-	
+
 }

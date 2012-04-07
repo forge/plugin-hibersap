@@ -19,12 +19,11 @@
 
 package org.hibersap.forge.util;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,16 +36,16 @@ public class FilterCollectionTest {
 
 	private Set<Entry<Object, Object>> set;
 	private Set<Entry<Object, Object>> expected;
-	
+
 	@Before
 	public void init() {
 		final Properties properties = new Properties();
 		properties.setProperty("real.key01", "some value");
 		properties.setProperty("real.key02", "some value");
 		properties.setProperty("real.key03", "some value");
-		
-		expected = properties.entrySet();
-		
+
+		this.expected = properties.entrySet();
+
 		properties.setProperty("test.key01", "some value");
 		properties.setProperty("test.key02", "some value");
 		properties.setProperty("test.key03", "some value");
@@ -56,17 +55,17 @@ public class FilterCollectionTest {
 		properties.setProperty("real.yek01", "some value");
 		properties.setProperty("real.yek02", "some value");
 		properties.setProperty("real.yek03", "some value");
-		
-		set = properties.entrySet();  
+
+		this.set = properties.entrySet();
 	}
-	
+
 	@Test
 	public void filter() {
-		final FilterCollection filterCollection = new FilterCollection(set, "real", "yek");
-		
+		final FilterCollection filterCollection = new FilterCollection(this.set, "real", "yek");
+
 		filterCollection.filter();
-		
-		assertEquals(expected, set);
+
+		Assert.assertEquals(this.expected, this.set);
 	}
 
 }

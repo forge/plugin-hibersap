@@ -19,15 +19,13 @@
 
 package org.hibersap.forge.manager;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.hibersap.forge.manager.ConnectionPropertiesManager;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,60 +40,60 @@ public class ConnectionPropertiesManagerTest {
 
 	private ConnectionPropertiesManager manager;
 	private String tempPath;
-	
+
 	@Rule
 	public final TemporaryFolder folder = new TemporaryFolder();
-	
+
 	@Before
 	public void init() throws Exception {
-		tempPath = folder.getRoot().getAbsolutePath() + "\\";
-		
-		manager = new ConnectionPropertiesManager(tempPath);
+		this.tempPath = this.folder.getRoot().getAbsolutePath() + "\\";
+
+		this.manager = new ConnectionPropertiesManager(this.tempPath);
 	}
 
 	@Test
 	public void readDefaultSAPProperties() {
-		assertEquals("some.sap-system.com", manager.getSAPProperty("jco.client.ashost"));
+		Assert.assertEquals("some.sap-system.com", this.manager.getSAPProperty("jco.client.ashost"));
 	}
 
 	@Test
 	public void writeSAPProperties() throws Exception {
 		final String propertyKey = "jco.client.ashost";
 		final String propertyValue = "some.sap.de";
-		
+
 		setAndWriteProperty(propertyKey, propertyValue);
 
 		final Properties properties = new Properties();
-		final InputStream inputStream = new FileInputStream(tempPath + "sap-connection.properties");
-		
+		final InputStream inputStream = new FileInputStream(this.tempPath + "sap-connection.properties");
+
 		properties.load(inputStream);
 		inputStream.close();
-		
-		assertEquals(properties.getProperty(propertyKey), propertyValue);
+
+		Assert.assertEquals(properties.getProperty(propertyKey), propertyValue);
 	}
-	
+
 	@Test
 	public void readSAPProperties() throws Exception {
 		final String propertyKey = "jco.client.user";
 		final String propertyValue = "newuser";
-		
+
 		setAndWriteProperty(propertyKey, propertyValue);
-		
-		manager = new ConnectionPropertiesManager(tempPath);
-		
-		assertEquals(propertyValue, manager.getSAPProperty(propertyKey));
+
+		this.manager = new ConnectionPropertiesManager(this.tempPath);
+
+		Assert.assertEquals(propertyValue, this.manager.getSAPProperty(propertyKey));
 	}
 
 	@Test
 	public void getAllSAPProperties() {
-		final Set<Entry<Object, Object>> allSAPProperties = manager.getAllSAPProperties();
-		
-		assertEquals(12, allSAPProperties.size());
+		final Set<Entry<Object, Object>> allSAPProperties = this.manager.getAllSAPProperties();
+
+		Assert.assertEquals(12, allSAPProperties.size());
 	}
-	
+
 	private void setAndWriteProperty(final String propertyKey, final String propertyValue) throws Exception {
-		manager.setSAPProperty(propertyKey, propertyValue);
-		manager.writeSAPProperties();
+		this.manager.setSAPProperty(propertyKey, propertyValue);
+		this.manager.writeSAPProperties();
 	}
 
 }

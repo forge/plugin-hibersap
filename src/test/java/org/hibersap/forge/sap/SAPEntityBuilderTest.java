@@ -19,148 +19,129 @@
 
 package org.hibersap.forge.sap;
 
-import org.hibersap.annotations.Bapi;
-import org.hibersap.annotations.Export;
-import org.hibersap.annotations.Import;
-import org.hibersap.annotations.Parameter;
-import org.hibersap.annotations.ParameterType;
-import org.hibersap.annotations.Table;
-import org.hibersap.forge.sap.SAPEntityBuilder;
-import org.hibersap.mapping.model.BapiMapping;
-import org.hibersap.mapping.model.FieldMapping;
-import org.hibersap.mapping.model.StructureMapping;
-import org.hibersap.mapping.model.TableMapping;
-import org.jboss.forge.parser.java.Field;
-import org.jboss.forge.parser.java.JavaClass;
-import org.junit.Before;
-import org.junit.Test;
-
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.junit.Assert.assertThat;
+import org.hamcrest.CoreMatchers;
+import org.hibersap.annotations.Bapi;
+import org.hibersap.annotations.Export;
+import org.hibersap.annotations.Import;
+import org.hibersap.annotations.Parameter;
+import org.hibersap.annotations.ParameterType;
+import org.hibersap.annotations.Table;
+import org.hibersap.mapping.model.BapiMapping;
+import org.hibersap.mapping.model.FieldMapping;
+import org.hibersap.mapping.model.StructureMapping;
+import org.hibersap.mapping.model.TableMapping;
+import org.jboss.forge.parser.java.Field;
+import org.jboss.forge.parser.java.JavaClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * 
  * @author Max Schwaab
  *
  */
-public class SAPEntityBuilderTest
-{
+public class SAPEntityBuilderTest {
 
+	private static final String CLASS_NAME = "mySAPClass";
+	private static final String JAVA_PACKAGE = "myPackage";
 
-    private static final String CLASS_NAME = "mySAPClass";
-    private static final String JAVA_PACKAGE = "myPackage";
+	private JavaClass javaClass;
 
+	private BapiMapping createMapping() {
+		final BapiMapping mapping = new BapiMapping(null, "BAPI_FLCONN_GETDETAIL", null);
 
-    private JavaClass javaClass;
+		mapping.addImportParameter(new FieldMapping(String.class, "TRAVELAGENCYNUMBER", "_travelagencynumber", null));
+		mapping.addImportParameter(new FieldMapping(String.class, "CONNECTIONNUMBER", "_connectionnumber", null));
+		mapping.addImportParameter(new FieldMapping(String.class, "NO_AVAILIBILITY", "_noAvailibility", null));
+		mapping.addImportParameter(new FieldMapping(Date.class, "FLIGHTDATE", "_flightdate", null));
 
-    private BapiMapping createMapping()
-    {
-        final BapiMapping mapping = new BapiMapping( null, "BAPI_FLCONN_GETDETAIL", null );
+		final Set<FieldMapping> priceInfoParamters = new HashSet<FieldMapping>();
+		priceInfoParamters.add(new FieldMapping(BigDecimal.class, "PRICE_ECO2", "_priceEco2", null));
+		priceInfoParamters.add(new FieldMapping(String.class, "CURR", "_curr", null));
+		mapping.addExportParameter(new StructureMapping(null, "PRICE_INFO", "_priceInfo", priceInfoParamters));
 
-        mapping.addImportParameter(
-                new FieldMapping( String.class, "TRAVELAGENCYNUMBER", "_travelagencynumber", null ) );
-        mapping.addImportParameter( new FieldMapping( String.class, "CONNECTIONNUMBER", "_connectionnumber", null ) );
-        mapping.addImportParameter( new FieldMapping( String.class, "NO_AVAILIBILITY", "_noAvailibility", null ) );
-        mapping.addImportParameter( new FieldMapping( Date.class, "FLIGHTDATE", "_flightdate", null ) );
+		final Set<FieldMapping> extOutParamters = new HashSet<FieldMapping>();
+		extOutParamters.add(new FieldMapping(String.class, "STRUCTURE", "_structure", null));
+		extOutParamters.add(new FieldMapping(String.class, "VALUEPART4", "_valuepart4", null));
+		final StructureMapping structureMapping = new StructureMapping(null, "EXTENSION_OUT", "_extensionOut",
+				extOutParamters);
+		mapping.addTableParameter(new TableMapping(List.class, null, "EXTENSION_OUT", "_extensionOut", structureMapping));
 
-        final Set<FieldMapping> priceInfoParamters = new HashSet<FieldMapping>();
-        priceInfoParamters.add( new FieldMapping( BigDecimal.class, "PRICE_ECO2", "_priceEco2", null ) );
-        priceInfoParamters.add( new FieldMapping( String.class, "CURR", "_curr", null ) );
-        mapping.addExportParameter( new StructureMapping( null, "PRICE_INFO", "_priceInfo", priceInfoParamters ) );
+		return mapping;
+	}
 
-        final Set<FieldMapping> extOutParamters = new HashSet<FieldMapping>();
-        extOutParamters.add( new FieldMapping( String.class, "STRUCTURE", "_structure", null ) );
-        extOutParamters.add( new FieldMapping( String.class, "VALUEPART4", "_valuepart4", null ) );
-        final StructureMapping structureMapping = new StructureMapping( null, "EXTENSION_OUT", "_extensionOut",
-                extOutParamters );
-        mapping.addTableParameter(
-                new TableMapping( List.class, null, "EXTENSION_OUT", "_extensionOut", structureMapping ) );
+	@Before
+	public void createSessionManager() {
+		final BapiMapping mapping = createMapping();
 
+		final SAPEntityBuilder builder = new SAPEntityBuilder();
+		builder.createNew(SAPEntityBuilderTest.CLASS_NAME, SAPEntityBuilderTest.JAVA_PACKAGE, mapping);
+		this.javaClass = builder.getSAPEntity().getBapiClass();
+	}
 
-        return mapping;
-    }
+	@Test
+	public void createsBasicClassDeclarations() {
+		Assert.assertThat(this.javaClass.getName(),
+				CoreMatchers.is(CoreMatchers.equalTo(SAPEntityBuilderTest.CLASS_NAME)));
+		Assert.assertThat(this.javaClass.getPackage(), CoreMatchers.equalTo(SAPEntityBuilderTest.JAVA_PACKAGE));
+		Assert.assertThat(this.javaClass.getAnnotations().size(), CoreMatchers.is(1));
+		Assert.assertThat(this.javaClass.getAnnotation(Bapi.class), CoreMatchers.is(CoreMatchers.notNullValue()));
+	}
 
-    @Before
-    public void createSessionManager()
-    {
-        final BapiMapping mapping = createMapping();
+	@Test
+	public void createsAllFields() {
+		final String[] allFieldNames = { "_travelagencynumber", "_noAvailibility", "_connectionnumber", "_flightdate",
+				"_priceInfo", "_extensionOut", };
 
-        final SAPEntityBuilder builder = new SAPEntityBuilder();
-        builder.createNew( CLASS_NAME, JAVA_PACKAGE, mapping );
-        javaClass = builder.getSAPEntity().getBapiClass();
-    }
+		Assert.assertThat(this.javaClass.getFields().size(), CoreMatchers.is(6));
 
-    @Test
-    public void createsBasicClassDeclarations()
-    {
-        assertThat( javaClass.getName(), is( equalTo( CLASS_NAME ) ) );
-        assertThat( javaClass.getPackage(), equalTo( JAVA_PACKAGE ) );
-        assertThat( javaClass.getAnnotations().size(), is( 1 ) );
-        assertThat( javaClass.getAnnotation( Bapi.class ), is( notNullValue() ) );
-    }
+		for (final String fieldName : allFieldNames) {
+			Assert.assertThat(this.javaClass.getField(fieldName), CoreMatchers.notNullValue());
+		}
+	}
 
-    @Test
-    public void createsAllFields()
-    {
-        String[] allFieldNames = {
-                "_travelagencynumber",
-                "_noAvailibility",
-                "_connectionnumber",
-                "_flightdate",
-                "_priceInfo",
-                "_extensionOut",
-        };
+	@Test
+	public void createsSimpleImportParameter() {
+		final Field<JavaClass> field = this.javaClass.getField("_flightdate");
 
-        assertThat( javaClass.getFields().size(), is( 6 ) );
+		Assert.assertThat(field.getType(), CoreMatchers.equalTo("Date"));
+		Assert.assertThat(field.getAnnotations().size(), CoreMatchers.is(2));
+		Assert.assertThat(field.getAnnotation(Import.class), CoreMatchers.is(CoreMatchers.notNullValue()));
+		Assert.assertThat(field.getAnnotation(Parameter.class), CoreMatchers.is(CoreMatchers.notNullValue()));
+		Assert.assertThat(field.getAnnotation(Parameter.class).getStringValue("value"),
+				CoreMatchers.equalTo("FLIGHTDATE"));
+	}
 
-        for ( final String fieldName : allFieldNames )
-        {
-            assertThat( javaClass.getField( fieldName ), notNullValue() );
-        }
-    }
+	@Test
+	public void createsComplexExportParameter() {
+		final Field<JavaClass> field = this.javaClass.getField("_priceInfo");
 
-    @Test
-    public void createsSimpleImportParameter()
-    {
-        final Field<JavaClass> field = javaClass.getField( "_flightdate" );
+		Assert.assertThat(field.getType(), CoreMatchers.equalTo("PriceInfo"));
+		Assert.assertThat(field.getAnnotations().size(), CoreMatchers.is(2));
+		Assert.assertThat(field.getAnnotation(Export.class), CoreMatchers.is(CoreMatchers.notNullValue()));
+		Assert.assertThat(field.getAnnotation(Parameter.class), CoreMatchers.is(CoreMatchers.notNullValue()));
+		Assert.assertThat(field.getAnnotation(Parameter.class).getStringValue("value"),
+				CoreMatchers.equalTo("PRICE_INFO"));
+		Assert.assertThat(field.getAnnotation(Parameter.class).getEnumValue(ParameterType.class, "type"),
+				CoreMatchers.equalTo(ParameterType.STRUCTURE));
+	}
 
-        assertThat( field.getType(), equalTo( "Date" ) );
-        assertThat( field.getAnnotations().size(), is( 2 ) );
-        assertThat( field.getAnnotation( Import.class ), is( notNullValue() ) );
-        assertThat( field.getAnnotation( Parameter.class ), is( notNullValue() ) );
-        assertThat( field.getAnnotation( Parameter.class ).getStringValue( "value" ), equalTo( "FLIGHTDATE" ) );
-    }
+	@Test
+	public void createsTableParamater() {
+		final Field<JavaClass> field = this.javaClass.getField("_extensionOut");
 
-    @Test
-    public void createsComplexExportParameter()
-    {
-        final Field<JavaClass> field = javaClass.getField( "_priceInfo" );
-
-        assertThat( field.getType(), equalTo( "PriceInfo" ) );
-        assertThat( field.getAnnotations().size(), is( 2 ) );
-        assertThat( field.getAnnotation( Export.class ), is( notNullValue() ) );
-        assertThat( field.getAnnotation( Parameter.class ), is( notNullValue() ) );
-        assertThat( field.getAnnotation( Parameter.class ).getStringValue( "value" ), equalTo( "PRICE_INFO" ) );
-        assertThat( field.getAnnotation( Parameter.class ).getEnumValue( ParameterType.class, "type" ), equalTo( ParameterType.STRUCTURE ) );
-    }
-
-    @Test
-    public void createsTableParamater()
-    {
-        final Field<JavaClass> field = javaClass.getField( "_extensionOut" );
-
-        assertThat( field.getType(), equalTo( "List" ) );
-        assertThat( field.getAnnotations().size(), is( 2 ) );
-        assertThat( field.getAnnotation( Table.class ), is( notNullValue() ) );
-        assertThat( field.getAnnotation( Parameter.class ), is( notNullValue() ) );
-        assertThat( field.getAnnotation( Parameter.class ).getStringValue( "value" ), equalTo( "EXTENSION_OUT" ) );
-    }
+		Assert.assertThat(field.getType(), CoreMatchers.equalTo("List"));
+		Assert.assertThat(field.getAnnotations().size(), CoreMatchers.is(2));
+		Assert.assertThat(field.getAnnotation(Table.class), CoreMatchers.is(CoreMatchers.notNullValue()));
+		Assert.assertThat(field.getAnnotation(Parameter.class), CoreMatchers.is(CoreMatchers.notNullValue()));
+		Assert.assertThat(field.getAnnotation(Parameter.class).getStringValue("value"),
+				CoreMatchers.equalTo("EXTENSION_OUT"));
+	}
 }

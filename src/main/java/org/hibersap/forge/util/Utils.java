@@ -26,7 +26,7 @@ package org.hibersap.forge.util;
  *
  */
 public class Utils {
-	
+
 	/**
 	 * Checks for correct path formatting if path ends with [\] or [/])
 	 * 
@@ -34,9 +34,10 @@ public class Utils {
 	 * @throws IllegalArgumentException
 	 */
 	public static void checkPath(final String path) throws IllegalArgumentException {
-		if(!path.endsWith("\\") && !path.endsWith("/")) {
-			throw new IllegalArgumentException("Expected path ends with [\\] or [/], but was " + path.charAt(path.length() - 1));
-		}		
+		if (!path.endsWith("\\") && !path.endsWith("/")) {
+			throw new IllegalArgumentException("Expected path ends with [\\] or [/], but was "
+					+ path.charAt(path.length() - 1));
+		}
 	}
 
 	/**
@@ -50,21 +51,21 @@ public class Utils {
 	 * @return the camelCased input String
 	 */
 	public static String toCamelCase(final String input, final char spacer) {
-		if(input == null) {
+		if (input == null) {
 			return null;
 		}
-		if(input.isEmpty()) {
+		if (input.isEmpty()) {
 			return "";
 		}
-		
+
 		final StringBuilder stringBuilder = new StringBuilder();
-		
-		for(final String subString : input.split(Character.toString(spacer))) {
-		    stringBuilder.append(subString.substring(0, 1).toUpperCase());
-		    stringBuilder.append(subString.substring(1).toLowerCase());
+
+		for (final String subString : input.split(Character.toString(spacer))) {
+			stringBuilder.append(subString.substring(0, 1).toUpperCase());
+			stringBuilder.append(subString.substring(1).toLowerCase());
 		}
-		
+
 		return stringBuilder.toString();
 	}
-	
+
 }

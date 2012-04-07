@@ -19,8 +19,7 @@
 
 package org.hibersap.forge.util;
 
-import static org.junit.Assert.assertEquals;
-
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -34,64 +33,64 @@ public class UtilsTest {
 
 	@Rule
 	public final TemporaryFolder folder = new TemporaryFolder();
-	
+
 	@Test(expected = IllegalArgumentException.class)
 	public void checkPathIncorrect() {
-		final String tempPath = folder.getRoot().getAbsolutePath();
-		
+		final String tempPath = this.folder.getRoot().getAbsolutePath();
+
 		Utils.checkPath(tempPath);
 	}
 
 	@Test
 	public void checkPathCorrect() {
-		final String tempPath = folder.getRoot().getAbsolutePath() + "\\";
-		
-		Utils.checkPath(tempPath);	
+		final String tempPath = this.folder.getRoot().getAbsolutePath() + "\\";
+
+		Utils.checkPath(tempPath);
 	}
 
 	@Test
 	public void toCamelCaseUpperCase() {
-		assertEquals("ConvertThisText", Utils.toCamelCase("CONVERT_THIS_TEXT", '_'));
+		Assert.assertEquals("ConvertThisText", Utils.toCamelCase("CONVERT_THIS_TEXT", '_'));
 	}
-	
+
 	@Test
 	public void toCamelCaseUpperSingleCase() {
-		assertEquals("Convert", Utils.toCamelCase("CONVERT", '_'));
+		Assert.assertEquals("Convert", Utils.toCamelCase("CONVERT", '_'));
 	}
-	
+
 	@Test
 	public void toCamelCaseLowerCase() {
-		assertEquals("ConvertThisText", Utils.toCamelCase("convert_this_text", '_'));
+		Assert.assertEquals("ConvertThisText", Utils.toCamelCase("convert_this_text", '_'));
 	}
-	
+
 	@Test
 	public void toCamelCaseLowerSingleCase() {
-		assertEquals("Convert", Utils.toCamelCase("convert", '_'));
+		Assert.assertEquals("Convert", Utils.toCamelCase("convert", '_'));
 	}
 
 	@Test
 	public void toCamelCaseMixedCase() {
-		assertEquals("ConvertThisText", Utils.toCamelCase("Convert_This_Text", '_'));
+		Assert.assertEquals("ConvertThisText", Utils.toCamelCase("Convert_This_Text", '_'));
 	}
-	
+
 	@Test
 	public void toCamelCaseMixedSingleCase() {
-		assertEquals("Convert", Utils.toCamelCase("cOnVert", '_'));
+		Assert.assertEquals("Convert", Utils.toCamelCase("cOnVert", '_'));
 	}
-	
+
 	@Test
 	public void toCamelCaseEmpty() {
-		assertEquals("", Utils.toCamelCase("", '_'));
+		Assert.assertEquals("", Utils.toCamelCase("", '_'));
 	}
-	
+
 	@Test
 	public void toCamelCaseNull() {
-		assertEquals(null, Utils.toCamelCase(null, '_'));
+		Assert.assertEquals(null, Utils.toCamelCase(null, '_'));
 	}
-	
+
 	@Test
 	public void toCamelCaseSpacer() {
-		assertEquals("ConvertThisText", Utils.toCamelCase("CONVERT/THIS/TEXT", '/'));
+		Assert.assertEquals("ConvertThisText", Utils.toCamelCase("CONVERT/THIS/TEXT", '/'));
 	}
-	
+
 }

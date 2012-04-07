@@ -32,14 +32,14 @@ import java.util.Map.Entry;
  *
  */
 public class FilterCollection {
-	
+
 	/** The collection **/
 	private final Collection<Entry<Object, Object>> collection;
 	/** The starts-with-pattern expression **/
 	private final String startsWithPattern;
 	/** The exclude pattern expression **/
 	private final String excludePattern;
-	
+
 	/**
 	 * Constructor - Instantiates a new FilterCollection 
 	 * 
@@ -47,30 +47,31 @@ public class FilterCollection {
 	 * @param startsWithPattern - the expression the entry key should start with
 	 * @param excludePattern - the expression the entry key should not contain
 	 */
-	public FilterCollection(final Collection<Entry<Object, Object>> collection, final String startsWithPattern, final String excludePattern) {
+	public FilterCollection(final Collection<Entry<Object, Object>> collection, final String startsWithPattern,
+			final String excludePattern) {
 		this.collection = collection;
 		this.startsWithPattern = startsWithPattern;
 		this.excludePattern = excludePattern;
 	}
-	
+
 	/**
 	 * Filters the given collection
 	 * 
 	 * @return the filtered collection
 	 */
 	public Collection<Entry<Object, Object>> filter() {
-		final Iterator<Entry<Object, Object>> iterator = collection.iterator();
+		final Iterator<Entry<Object, Object>> iterator = this.collection.iterator();
 		final startsWithAndExcludePredicate connectionTypePredicate = new startsWithAndExcludePredicate();
-		
-		while(iterator.hasNext()) {
-			if(!connectionTypePredicate.isSatisfied(iterator.next())) {
+
+		while (iterator.hasNext()) {
+			if (!connectionTypePredicate.isSatisfied(iterator.next())) {
 				iterator.remove();
 			}
 		}
-		
-		return collection;
+
+		return this.collection;
 	}
-	
+
 	/**
 	 * A Predicate
 	 * 
@@ -87,15 +88,16 @@ public class FilterCollection {
 		 * @param entry - the Entry object to be tested
 		 * @return true or false, depending on test result
 		 */
-		public boolean isSatisfied(Entry<Object, Object> entry) {
+		public boolean isSatisfied(final Entry<Object, Object> entry) {
 			final String key = entry.getKey().toString();
-			
-			if(key.startsWith(startsWithPattern) && !key.contains(excludePattern)) {
+
+			if (key.startsWith(FilterCollection.this.startsWithPattern)
+					&& !key.contains(FilterCollection.this.excludePattern)) {
 				return true;
 			}
 			return false;
 		}
-		
+
 	}
 
 }

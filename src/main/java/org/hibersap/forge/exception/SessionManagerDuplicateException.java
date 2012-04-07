@@ -23,12 +23,12 @@ package org.hibersap.forge.exception;
  * Indicates that a session manager name is already in use in the Hibersap context
  * 
  * @author Max Schwaab
- *
+ * 
  */
 public class SessionManagerDuplicateException extends Exception {
 
 	private static final long serialVersionUID = 4484599590902696907L;
-	
+
 	public SessionManagerDuplicateException(final String sessionManagerName) {
 		super("Session manager name \"" + sessionManagerName + "\" is aready in use");
 	}

@@ -75,16 +75,16 @@ public class SAPEntityBuilder {
 		final Annotation<JavaClass> bapiAnno = bapiClass.addAnnotation(Bapi.class);
 		bapiAnno.setStringValue(bapiName);
 
-		entity = new SAPEntity(bapiClass);
-		
+		this.entity = new SAPEntity(bapiClass);
+
 		createConstructor(bapiClass, importParams);
 		createParameters(bapiClass, importParams, javaPackage, Import.class);
 		createParameters(bapiClass, exportParams, javaPackage, Export.class);
 		createParameters(bapiClass, tableParams, javaPackage, Table.class);
-		
+
 		Refactory.createToStringFromFields(bapiClass);
 	}
-	
+
 	/**
 	 * Creates an empty Java class with the given class name and Java package 
 	 * 
@@ -112,42 +112,41 @@ public class SAPEntityBuilder {
 	private void createConstructor(final JavaClass bapiClass, final Set<ObjectMapping> importParams) {
 		final StringBuilder parameterBuilder = new StringBuilder();
 		final StringBuilder bodyBuilder = new StringBuilder();
-		
-		for(final ObjectMapping parameterMapping : importParams) {
+
+		for (final ObjectMapping parameterMapping : importParams) {
 			final String parameterFieldName = parameterMapping.getJavaName().substring(1);
 			final Class<?> clazz = parameterMapping.getAssociatedType();
 			final String parameterType;
-		
-			if(clazz != null) {
+
+			if (clazz != null) {
 				parameterType = clazz.getSimpleName();
 			} else {
-				parameterType = convertFieldNameToClassName(parameterMapping.getJavaName());
+				parameterType = SAPEntityBuilder.convertFieldNameToClassName(parameterMapping.getJavaName());
 			}
-			
-			parameterBuilder.append("final ");			
+
+			parameterBuilder.append("final ");
 			parameterBuilder.append(parameterType);
 			parameterBuilder.append(" ");
 			parameterBuilder.append(parameterFieldName);
 			parameterBuilder.append(", ");
-			
+
 			bodyBuilder.append("this.");
 			bodyBuilder.append(parameterMapping.getJavaName());
 			bodyBuilder.append(" = ");
 			bodyBuilder.append(parameterFieldName);
 			bodyBuilder.append(";\n");
 		}
-		
+
 		final String temp = parameterBuilder.toString();
 		final String parameters = temp.substring(0, temp.length() - 2);
 		final Method<JavaClass> constructor = bapiClass.addMethod();
-		
+
 		constructor.setPublic();
 		constructor.setConstructor(true);
 		constructor.setParameters(parameters);
 		constructor.setBody(bodyBuilder.toString());
 	}
 
-	
 	/**
 	 * Creates the field, structure and table parameters for a given BAPI class with the given annotation
 	 * 
@@ -156,51 +155,50 @@ public class SAPEntityBuilder {
 	 * @param javaPackage - the Java package
 	 * @param annotationClass - the annotation needed for given parameter type
 	 */
-	private void createParameters(final JavaClass bapiClass, final Set<? extends ParameterMapping> params, String javaPackage, Class<? extends java.lang.annotation.Annotation> annotationClass) {
+	private void createParameters(final JavaClass bapiClass, final Set<? extends ParameterMapping> params,
+			final String javaPackage, final Class<? extends java.lang.annotation.Annotation> annotationClass) {
 		for (final ParameterMapping param : params) {
 			final String paramName = param.getJavaName();
 			final ParamType paramType = param.getParamType();
 			final Class<?> associatedType = param.getAssociatedType();
 			final Field<JavaClass> field;
 
-			if(paramType == ParamType.FIELD) {
+			if (paramType == ParamType.FIELD) {
 				field = createSimpleField(paramName, associatedType.getName(), bapiClass);
 			} else {
 				final JavaClass structureClass = createStructureClass(javaPackage, param);
 				final String structureClassName = structureClass.getName();
-				
-				entity.getStructureClasses().add(structureClass);
-				
-				switch(paramType) {
-					case STRUCTURE:
-						field = createSimpleField(paramName, structureClassName, bapiClass);
-						break;
-					case TABLE:
-//						if(!bapiClass.hasImport(List.class)) { Wird vin addImport abgedeckt
-						bapiClass.addImport(List.class);
-//						}
-						
-						field = bapiClass.addField("List<" + structureClassName + "> " + paramName + ";");
-						break;
-					default:
-						throw new HibersapException("Parameter type not expected: " + paramType);
+
+				this.entity.getStructureClasses().add(structureClass);
+
+				switch (paramType) {
+				case STRUCTURE:
+					field = createSimpleField(paramName, structureClassName, bapiClass);
+					break;
+				case TABLE:
+					//Check for bapiClass.hasImport(List.class) not necessary, because it is done in addImport()
+					bapiClass.addImport(List.class);
+					field = bapiClass.addField("List<" + structureClassName + "> " + paramName + ";");
+					break;
+				default:
+					throw new HibersapException("Parameter type not expected: " + paramType);
 				}
 			}
-			
+
 			field.addAnnotation(annotationClass);
-			
+
 			final Annotation<JavaClass> paramterAnno = field.addAnnotation(Parameter.class);
 			paramterAnno.setStringValue(param.getSapName());
-			
-			if(paramType != ParamType.TABLE && associatedType == null) {
+
+			if (paramType != ParamType.TABLE && associatedType == null) {
 				paramterAnno.setEnumValue("type", ParameterType.STRUCTURE);
 			}
-			
+
 			field.setPrivate();
-			if(annotationClass == Import.class) {
+			if (annotationClass == Import.class) {
 				field.setFinal(true);
 			}
-			
+
 			Refactory.createGetterAndSetter(bapiClass, field);
 		}
 	}
@@ -215,10 +213,10 @@ public class SAPEntityBuilder {
 	 */
 	private Field<JavaClass> createSimpleField(final String name, final String type, final JavaClass javaClass) {
 		final Field<JavaClass> field = javaClass.addField();
-		
+
 		field.setName(name);
 		field.setType(type);
-		
+
 		return field;
 	}
 
@@ -229,38 +227,38 @@ public class SAPEntityBuilder {
 	 * @param parameterMapping - the parameter mapping 
 	 * @return the created Java class
 	 */
-	private JavaClass createStructureClass(String javaPackage, final ParameterMapping parameterMapping) {
-		final String className = convertFieldNameToClassName(parameterMapping.getJavaName());
+	private JavaClass createStructureClass(final String javaPackage, final ParameterMapping parameterMapping) {
+		final String className = SAPEntityBuilder.convertFieldNameToClassName(parameterMapping.getJavaName());
 		final JavaClass structureClass = createJavaClass(className, javaPackage);
 		final Set<FieldMapping> fieldMappings;
-		
+
 		structureClass.addAnnotation(BapiStructure.class);
-		
+
 		switch (parameterMapping.getParamType()) {
 		case STRUCTURE:
 			final StructureMapping structureMapping = (StructureMapping) parameterMapping;
-			 fieldMappings = structureMapping.getParameters();
+			fieldMappings = structureMapping.getParameters();
 			break;
 		case TABLE:
 			final TableMapping tableMapping = (TableMapping) parameterMapping;
 			fieldMappings = tableMapping.getComponentParameter().getParameters();
 			break;
 		default:
-			throw new HibersapException("Parameter type not expected: " + parameterMapping.getParamType());			
+			throw new HibersapException("Parameter type not expected: " + parameterMapping.getParamType());
 		}
-				
+
 		for (final FieldMapping fieldMapping : fieldMappings) {
 			final Field<JavaClass> field = structureClass.addField();
 			field.setName(fieldMapping.getJavaName());
 			field.setType(fieldMapping.getAssociatedType());
 			final Annotation<JavaClass> annotation = field.addAnnotation(Parameter.class);
 			annotation.setStringValue(fieldMapping.getSapName());
-			
+
 			Refactory.createGetterAndSetter(structureClass, field);
 		}
-			
+
 		Refactory.createToStringFromFields(structureClass);
-		
+
 		return structureClass;
 	}
 
@@ -270,13 +268,13 @@ public class SAPEntityBuilder {
 	 * @param fieldName - the field name
 	 * @return the class name
 	 */
-	private static String convertFieldNameToClassName(String fieldName) {
+	private static String convertFieldNameToClassName(final String fieldName) {
 		if (fieldName.length() > 2) {
-			final String newFieldName = fieldName.substring(1, 2).toUpperCase() + fieldName.substring(2); 
-			
+			final String newFieldName = fieldName.substring(1, 2).toUpperCase() + fieldName.substring(2);
+
 			return newFieldName;
 		}
-		
+
 		return fieldName;
 	}
 
@@ -288,5 +286,5 @@ public class SAPEntityBuilder {
 	public SAPEntity getSAPEntity() {
 		return this.entity;
 	}
-	
+
 }

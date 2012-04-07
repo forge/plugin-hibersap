@@ -19,7 +19,6 @@
 
 package org.hibersap.forge;
 
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
@@ -74,10 +73,10 @@ import org.jboss.forge.shell.plugins.RequiresProject;
 @Alias("generate-sap-entities")
 @Help("Generate entities from a SAP system.")
 public class GenerateSAPEntitiesPlugin implements Plugin {
-	
+
 	/** The Hibersap repository URL **/
 	private final static String HIBERSAP_REPO_URL = "http://hibersap.svn.sourceforge.net/viewvc/hibersap/m2repo";
-	
+
 	/** The Forge shell **/
 	private final Shell shell;
 	/** The Forge project **/
@@ -94,28 +93,28 @@ public class GenerateSAPEntitiesPlugin implements Plugin {
 	 */
 	@Inject
 	public GenerateSAPEntitiesPlugin(final Project project, final Shell shell) throws IOException {
-		final String pluginDirPath  = shell.getEnvironment().getPluginDirectory().getFullyQualifiedName();
+		final String pluginDirPath = shell.getEnvironment().getPluginDirectory().getFullyQualifiedName();
 		final String configDirPath = pluginDirPath + "/org/hibersap/forge/hibersap-plugin/config/";
-		
+
 		this.shell = shell;
 		this.project = project;
 		this.sapConnectionPropertiesManager = new ConnectionPropertiesManager(configDirPath);
 	}
-	
+
 	/**
 	 * Lists the SAP connection properties
 	 * 
 	 * @param out
 	 */
-	@Command(value="list-properties", help="Lists all available connection properties")
+	@Command(value = "list-properties", help = "Lists all available connection properties")
 	public void listProperties() {
-		final Set<Entry<Object, Object>> properties = sapConnectionPropertiesManager.getAllSAPProperties();//TODO sort entries
-		
-		for(final Entry<Object, Object> property : properties) {
-			shell.println(property.getKey() + "=" + property.getValue());
-		}		
+		final Set<Entry<Object, Object>> properties = this.sapConnectionPropertiesManager.getAllSAPProperties();//TODO sort entries
+
+		for (final Entry<Object, Object> property : properties) {
+			this.shell.println(property.getKey() + "=" + property.getValue());
+		}
 	}
-	
+
 	/**
 	 * Sets a SAP connection property
 	 * 
@@ -123,24 +122,25 @@ public class GenerateSAPEntitiesPlugin implements Plugin {
 	 * @param value - the property value
 	 * @throws IOException 
 	 */
-	@Command(value="set-property", help="Sets a connection property")
-	public void setProperty(@Option(name="key", help="the property key") final String key, @Option(name="value", help="the property value") final String value) throws IOException {
-		sapConnectionPropertiesManager.setSAPProperty(key, value);
-		sapConnectionPropertiesManager.writeSAPProperties();
+	@Command(value = "set-property", help = "Sets a connection property")
+	public void setProperty(@Option(name = "key", help = "the property key") final String key,
+			@Option(name = "value", help = "the property value") final String value) throws IOException {
+		this.sapConnectionPropertiesManager.setSAPProperty(key, value);
+		this.sapConnectionPropertiesManager.writeSAPProperties();
 	}
-	
+
 	/**
 	 * Deletes a SAP connection property
 	 * 
 	 * @param key - the property key
 	 * @throws IOException
 	 */
-	@Command(value="delete-property", help="Deletes a connection property")
-	public void deleteProperty(@Option(name="key", help="the property key") final String key) throws IOException {
-		sapConnectionPropertiesManager.deleteSAPProperty(key);
-		sapConnectionPropertiesManager.writeSAPProperties();
+	@Command(value = "delete-property", help = "Deletes a connection property")
+	public void deleteProperty(@Option(name = "key", help = "the property key") final String key) throws IOException {
+		this.sapConnectionPropertiesManager.deleteSAPProperty(key);
+		this.sapConnectionPropertiesManager.writeSAPProperties();
 	}
-	
+
 	/**
 	 * Generates all necessary classes to access a chosen SAP function.
 	 * Searches for SAP functions with the given name pattern and shows results according to given max. result number (0 shows all results).
@@ -154,65 +154,70 @@ public class GenerateSAPEntitiesPlugin implements Plugin {
 	 * @throws SessionManagerDuplicateException 
 	 * @throws ClassNotFoundException 
 	 */
-	@DefaultCommand(help="Generates the necessary Java classes for a given SAP function")
+	@DefaultCommand(help = "Generates the necessary Java classes for a given SAP function")
 	public void generateSAPEntities(
-			@Option(name="name-pattern", help="Pattern to search SAP function names. Use * and ? as wildcards.") final String namePattern, 
-			@Option(name="max-results", help="Number of max. results. Use 0 for unlimited result list. Default value is 20", defaultValue="20") final int maxResults) throws JAXBException, ParserConfigurationException, FileNotFoundException, TransformerException, SessionManagerDuplicateException, ClassNotFoundException {
-		final SessionManagerConfig sessionManagerConfig = createSessionManagerConfig(); 
+			@Option(name = "name-pattern", help = "Pattern to search SAP function names. Use * and ? as wildcards.") final String namePattern,
+			@Option(name = "max-results", help = "Number of max. results. Use 0 for unlimited result list. Default value is 20", defaultValue = "20") final int maxResults)
+			throws JAXBException, ParserConfigurationException, FileNotFoundException, TransformerException,
+			SessionManagerDuplicateException, ClassNotFoundException {
+		final SessionManagerConfig sessionManagerConfig = createSessionManagerConfig();
 		final AnnotationConfiguration configuration = new AnnotationConfiguration(sessionManagerConfig);
 		final SessionManager sessionManager = configuration.buildSessionManager();
 		final SAPFunctionModuleSearch functionModuleSearch = new SAPFunctionModuleSearch(namePattern, maxResults);
-		final Session session =  sessionManager.openSession();
-		
-		try{
+		final Session session = sessionManager.openSession();
+
+		try {
 			session.execute(functionModuleSearch);
 		} finally {
 			session.close();
 		}
-		
+
 		final List<String> functionNames = functionModuleSearch.getFunctionNames();
 		functionNames.add("Cancel");
-		final String functionName = shell.promptChoiceTyped("\nSelect a function to generate the necessary Java classes:", functionNames);
-		
-		if(!functionName.equals("Cancel")) {
+		final String functionName = this.shell.promptChoiceTyped(
+				"\nSelect a function to generate the necessary Java classes:", functionNames);
+
+		if (!functionName.equals("Cancel")) {
 			final ReverseBapiMapper reverseBAPIMapper = new ReverseBapiMapper();
 			final BapiMapping functionMapping = reverseBAPIMapper.map(functionName, sessionManager);
-			
-			shell.println();
-			
+
+			this.shell.println();
+
 			final String defaultClassName = Utils.toCamelCase(functionMapping.getBapiName(), '_');
-			final String className = shell.prompt("Please enter a class name. Leave empty for default\n", defaultClassName);
-			
-			shell.println();
-			
-			final JavaSourceFacet java = project.getFacet(JavaSourceFacet.class);
+			final String className = this.shell.prompt("Please enter a class name. Leave empty for default\n",
+					defaultClassName);
+
+			this.shell.println();
+
+			final JavaSourceFacet java = this.project.getFacet(JavaSourceFacet.class);
 			final String defaultJavaPackage = java.getBasePackage() + ".hibersap";
-			final String javaPackage = shell.prompt("Please enter a Java package. Leave empty for default\n", defaultJavaPackage);
-			
+			final String javaPackage = this.shell.prompt("Please enter a Java package. Leave empty for default\n",
+					defaultJavaPackage);
+
 			final SAPEntityBuilder sapEntityBuilder = new SAPEntityBuilder();
 			sapEntityBuilder.createNew(className, javaPackage, functionMapping);
-			
+
 			final SAPEntity sapEntity = sapEntityBuilder.getSAPEntity();
 			final Set<JavaClass> javaClasses = sapEntity.getStructureClasses();
-			
+
 			javaClasses.add(sapEntity.getBapiClass());
-			shell.println();
-			
-			for(final JavaClass javaClass : javaClasses) {
+			this.shell.println();
+
+			for (final JavaClass javaClass : javaClasses) {
 				java.saveJavaSource(javaClass);
-				shell.println("Created SAP entity [" + javaClass.getQualifiedName() + "]");
-			}	
-			
+				this.shell.println("Created SAP entity [" + javaClass.getQualifiedName() + "]");
+			}
+
 			final String bapiClassName = sapEntity.getBapiClass().getQualifiedName();
 			sessionManagerConfig.setAnnotatedClasses(Collections.singletonList(bapiClassName));
-			
+
 			handleConfiguration(sessionManagerConfig);
 		} else {
-			shell.println();
-			shell.println("Command canceled...");
-			shell.println();
+			this.shell.println();
+			this.shell.println("Command canceled...");
+			this.shell.println();
 		}
-		
+
 	}
 
 	/**
@@ -225,8 +230,10 @@ public class GenerateSAPEntitiesPlugin implements Plugin {
 	 * @throws ClassNotFoundException
 	 * @throws FileNotFoundException 
 	 */
-	private void handleConfiguration(final SessionManagerConfig sessionManagerConfig) throws JAXBException, SessionManagerDuplicateException, ClassNotFoundException, FileNotFoundException {
-		final DirectoryResource metaInfDir = project.getProjectRoot().getChildDirectory("src/main/resources/META-INF");		
+	private void handleConfiguration(final SessionManagerConfig sessionManagerConfig) throws JAXBException,
+			SessionManagerDuplicateException, ClassNotFoundException, FileNotFoundException {
+		final DirectoryResource metaInfDir = this.project.getProjectRoot().getChildDirectory(
+				"src/main/resources/META-INF");
 		final String metaInfDirPath = metaInfDir.getFullyQualifiedName() + "/";
 		final HibersapXMLManager xmlManager = new HibersapXMLManager(metaInfDirPath);
 		final String sessionManagerName = sessionManagerConfig.getName();
@@ -236,17 +243,19 @@ public class GenerateSAPEntitiesPlugin implements Plugin {
 		final String sessionManagerNameChoice;
 		final boolean update;
 		final boolean replace;
-		
-		if(!sessionManagerNames.isEmpty()) {
+
+		if (!sessionManagerNames.isEmpty()) {
 			sessionManagerNames.add(newSessionManager);
-			shell.println();
-			sessionManagerNameChoice = shell.promptChoiceTyped("Please choose a session manager", sessionManagerNames, newSessionManager);
-			if(sessionManagerNameChoice.equals(newSessionManager)) {
-				if(xmlManager.sessionManagerNameExists(sessionManagerName)) {
-					shell.println();
-					replace = shell.promptBoolean("\nSession manager " + sessionManagerName + " already exists.\nReplace session manager? [" + sessionManagerName + "]", false);
-	
-					if(replace) {
+			this.shell.println();
+			sessionManagerNameChoice = this.shell.promptChoiceTyped("Please choose a session manager",
+					sessionManagerNames, newSessionManager);
+			if (sessionManagerNameChoice.equals(newSessionManager)) {
+				if (xmlManager.sessionManagerNameExists(sessionManagerName)) {
+					this.shell.println();
+					replace = this.shell.promptBoolean("\nSession manager " + sessionManagerName
+							+ " already exists.\nReplace session manager? [" + sessionManagerName + "]", false);
+
+					if (replace) {
 						update = false;
 					} else {
 						update = true;
@@ -264,18 +273,24 @@ public class GenerateSAPEntitiesPlugin implements Plugin {
 			update = false;
 			replace = true;
 		}
-		
-		if(replace && sessionManagerNameChoice.equals(newSessionManager)) {
-			shell.println();
-			
-			final String adapter = shell.promptRegex("Would you like to use JCo or JCA adapter for the current session manager?\nLeave empty for default", "[jJ][cC][aAoO]", "JCo");//Boolean("\nSession manager " + sessionManagerName + " already exists.\nReplace session manager? [" + sessionManagerName + "]", false);
-			
-			if(adapter.matches("[jJ][cC][aA]")) {
+
+		if (replace && sessionManagerNameChoice.equals(newSessionManager)) {
+			this.shell.println();
+
+			final String adapter = this.shell
+					.promptRegex(
+							"Would you like to use JCo or JCA adapter for the current session manager?\nLeave empty for default",
+							"[jJ][cC][aAoO]", "JCo");
+
+			if (adapter.matches("[jJ][cC][aA]")) {
 				//Set session manager for JCA environment
-				sessionManagerConfig.setContext(sapConnectionPropertiesManager.getSAPProperty("jca.context"));
-				sessionManagerConfig.setJcaConnectionFactory(sapConnectionPropertiesManager.getSAPProperty("jca.connection.factory"));
-				sessionManagerConfig.setJcaConnectionSpecFactory(sapConnectionPropertiesManager.getSAPProperty("jca.connectionspec.factory"));
-				sessionManagerConfig.setProperties(Collections.<Property> emptyList());//Set properties empty; Nullpointer if set null
+				sessionManagerConfig.setContext(this.sapConnectionPropertiesManager.getSAPProperty("jca.context"));
+				sessionManagerConfig.setJcaConnectionFactory(this.sapConnectionPropertiesManager
+						.getSAPProperty("jca.connection.factory"));
+				sessionManagerConfig.setJcaConnectionSpecFactory(this.sapConnectionPropertiesManager
+						.getSAPProperty("jca.connectionspec.factory"));
+				//Set properties empty; Nullpointer if set null
+				sessionManagerConfig.setProperties(Collections.<Property> emptyList());
 				//Handle dependencies for JCA environment
 				handleDependencies(false);
 			} else {
@@ -285,20 +300,20 @@ public class GenerateSAPEntitiesPlugin implements Plugin {
 				//Handle dependencies for JCo environment
 				handleDependencies(true);
 			}
-			
+
 			xmlManager.addAndOverrideSessionManager(sessionManagerConfig);
-			shell.println(messageBody + "added...");
+			this.shell.println(messageBody + "added...");
 		}
 
-		if(update) {
+		if (update) {
 			xmlManager.updateSessionManager(sessionManagerName, sessionManagerConfig);
-			shell.println(messageBody + "updated...");
+			this.shell.println(messageBody + "updated...");
 		}
-		
+
 		xmlManager.writeHibersapXML();
-		shell.println("\nWrote configuration file [hibersap.xml]\n");
+		this.shell.println("\nWrote configuration file [hibersap.xml]\n");
 	}
-	
+
 	/**
 	 * Creates the necessary session manager configuration for the function module search
 	 * 
@@ -306,22 +321,23 @@ public class GenerateSAPEntitiesPlugin implements Plugin {
 	 */
 	private SessionManagerConfig createSessionManagerConfig() {
 		final SessionManagerConfig sessionManagerConfig = new SessionManagerConfig();
-		
-		sessionManagerConfig.setName(sapConnectionPropertiesManager.getSAPProperty("session-manager.name"));
+
+		sessionManagerConfig.setName(this.sapConnectionPropertiesManager.getSAPProperty("session-manager.name"));
 		// Setting JCo context is not necessary, because it's set by default when creating a new SessionManangerConfig object
 		sessionManagerConfig.addAnnotatedClass(SAPFunctionModuleSearch.class);
-		
+
 		//Filter JCo properties from property list
 		//New Set necessary, because the sapConnection properties shall not be affected
-		final Set<Entry<Object, Object>> jcoConnectionProperties = new HashSet<Entry<Object,Object>>(sapConnectionPropertiesManager.getAllSAPProperties());
+		final Set<Entry<Object, Object>> jcoConnectionProperties = new HashSet<Entry<Object, Object>>(
+				this.sapConnectionPropertiesManager.getAllSAPProperties());
 		final FilterCollection filter = new FilterCollection(jcoConnectionProperties, "jco", "context");
-		
+
 		filter.filter();
-		
-		for(final Entry<Object, Object> entry : jcoConnectionProperties) {
+
+		for (final Entry<Object, Object> entry : jcoConnectionProperties) {
 			sessionManagerConfig.setProperty(entry.getKey().toString(), entry.getValue().toString());
 		}
-		
+
 		return sessionManagerConfig;
 	}
 
@@ -329,43 +345,37 @@ public class GenerateSAPEntitiesPlugin implements Plugin {
 	 * Checks for the necessary Hibersap dependencies and add them to project pom.xml if necessary
 	 */
 	private void handleDependencies(final boolean jco) {
-		final DependencyFacet dependencyFacet = project.getFacet(DependencyFacet.class);
-		
-		shell.println();
-		shell.println("Checking and updating dependencies...");
-		
+		final DependencyFacet dependencyFacet = this.project.getFacet(DependencyFacet.class);
+
+		this.shell.println();
+		this.shell.println("Checking and updating dependencies...");
+
 		//Check not necessary, because its performed in the addRepository method too, that why repo will be removed if present
-		dependencyFacet.addRepository("repository.hibersap", HIBERSAP_REPO_URL);
-		
+		dependencyFacet.addRepository("repository.hibersap", GenerateSAPEntitiesPlugin.HIBERSAP_REPO_URL);
+
 		//Add hibersap-core dependency
-		final Dependency hibersapCore = DependencyBuilder.create()
-				.setGroupId("org.hibersap")
+		final Dependency hibersapCore = DependencyBuilder.create().setGroupId("org.hibersap")
 				.setArtifactId("hibersap-core");
-		addDependency( dependencyFacet, hibersapCore );
-				
-		if(jco) {
+		addDependency(dependencyFacet, hibersapCore);
+
+		if (jco) {
 			//Add hibersap-jco dependency
-			final Dependency hibersapJCo = DependencyBuilder.create()
-					.setGroupId("org.hibersap")
+			final Dependency hibersapJCo = DependencyBuilder.create().setGroupId("org.hibersap")
 					.setArtifactId("hibersap-jco");
 			addDependency(dependencyFacet, hibersapJCo);
-			
+
 			//Add SAP JCo dependency
-			final Dependency sapJCo = DependencyBuilder.create()
-					.setGroupId("com.sap")
-					.setArtifactId("sap-jco");
+			final Dependency sapJCo = DependencyBuilder.create().setGroupId("com.sap").setArtifactId("sap-jco");
 			addDependency(dependencyFacet, sapJCo);
 		} else {
 			//Add hibersap-jca dependency
-			final Dependency hibersapJCA = DependencyBuilder.create()
-					.setGroupId("org.hibersap")
+			final Dependency hibersapJCA = DependencyBuilder.create().setGroupId("org.hibersap")
 					.setArtifactId("hibersap-jca");
 			addDependency(dependencyFacet, hibersapJCA);
 		}
-		
+
 		//Add javax validation api for bean validation
-		final Dependency beanValidation = DependencyBuilder.create()
-				.setGroupId("javax.validation")
+		final Dependency beanValidation = DependencyBuilder.create().setGroupId("javax.validation")
 				.setArtifactId("validation-api");
 		addDependency(dependencyFacet, beanValidation);
 	}
@@ -377,31 +387,33 @@ public class GenerateSAPEntitiesPlugin implements Plugin {
 	 * @param dependency - the dependency
 	 */
 	private void addDependency(final DependencyFacet dependencyFacet, final Dependency dependency) {
-		if(!dependencyFacet.hasDirectDependency(dependency)) {
-			if(dependency.getArtifactId().equals("validation-api")) {
-				shell.println();
-				
+		if (!dependencyFacet.hasDirectDependency(dependency)) {
+			if (dependency.getArtifactId().equals("validation-api")) {
+				this.shell.println();
+
 				//Check if user wants to use bean validation
-				final boolean useBeanValidation = shell.promptBoolean("Do you want to  use bean validation in your project?", false);
-					
-				if(!useBeanValidation) {
+				final boolean useBeanValidation = this.shell.promptBoolean(
+						"Do you want to  use bean validation in your project?", false);
+
+				if (!useBeanValidation) {
 					return;
 				}
 			}
-			
-			shell.println();
-			
+
+			this.shell.println();
+
 			final List<Dependency> versions = dependencyFacet.resolveAvailableVersions(dependency);
-			final Dependency newDependency = shell.promptChoiceTyped("Which version do you want to install?", versions);
-			
+			final Dependency newDependency = this.shell.promptChoiceTyped("Which version do you want to install?",
+					versions);
+
 			dependencyFacet.addDirectDependency(newDependency);
-			
+
 			//Just to have nicer shell view
-			if(versions.size() > 1) {
-				shell.println();
+			if (versions.size() > 1) {
+				this.shell.println();
 			}
-			shell.println("Dependency added [" + newDependency.getArtifactId() + "]");
+			this.shell.println("Dependency added [" + newDependency.getArtifactId() + "]");
 		}
 	}
-	
+
 }
