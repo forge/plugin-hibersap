@@ -86,14 +86,6 @@ public class ConnectionPropertiesManagerTest {
 		assertEquals(propertyValue, manager.getSAPProperty(propertyKey));
 	}
 
-
-	@Test
-	public void getSAPJcoProperties() {
-		final Set<Entry<Object, Object>> sapJcoProperties = manager.getSAPJcoProperties();
-		
-		assertEquals(7, sapJcoProperties.size());
-	}
-
 	@Test
 	public void getAllSAPProperties() {
 		final Set<Entry<Object, Object>> allSAPProperties = manager.getAllSAPProperties();

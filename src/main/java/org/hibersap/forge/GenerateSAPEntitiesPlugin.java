@@ -23,6 +23,7 @@ package org.hibersap.forge;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -41,6 +42,7 @@ import org.hibersap.forge.manager.HibersapXMLManager;
 import org.hibersap.forge.sap.SAPEntity;
 import org.hibersap.forge.sap.SAPEntityBuilder;
 import org.hibersap.forge.sap.SAPFunctionModuleSearch;
+import org.hibersap.forge.util.FilterCollection;
 import org.hibersap.forge.util.Utils;
 import org.hibersap.generation.bapi.ReverseBapiMapper;
 import org.hibersap.mapping.model.BapiMapping;
@@ -309,7 +311,12 @@ public class GenerateSAPEntitiesPlugin implements Plugin {
 		// Setting JCo context is not necessary, because it's set by default when creating a new SessionManangerConfig object
 		sessionManagerConfig.addAnnotatedClass(SAPFunctionModuleSearch.class);
 		
-		final Set<Entry<Object, Object>> jcoConnectionProperties = sapConnectionPropertiesManager.getSAPJcoProperties();
+		//Filter JCo properties from property list
+		//New Set necessary, because the sapConnection properties shall not be affected
+		final Set<Entry<Object, Object>> jcoConnectionProperties = new HashSet<Entry<Object,Object>>(sapConnectionPropertiesManager.getAllSAPProperties());
+		final FilterCollection filter = new FilterCollection(jcoConnectionProperties, "jco", "context");
+		
+		filter.filter();
 		
 		for(final Entry<Object, Object> entry : jcoConnectionProperties) {
 			sessionManagerConfig.setProperty(entry.getKey().toString(), entry.getValue().toString());

@@ -24,12 +24,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 
-import org.hibersap.forge.util.FilterCollection;
 import org.hibersap.forge.util.Utils;
 
 /**
@@ -138,21 +136,6 @@ public class ConnectionPropertiesManager {
 	 */
 	public Set<Entry<Object, Object>> getAllSAPProperties() {
 		return sapConnection.entrySet();
-	}
-	
-	/**
-	 * Gets the JCo SAP connection properties
-	 * 
-	 * @return the JCo SAP connection properties
-	 */
-	public Set<Entry<Object, Object>> getSAPJcoProperties() {
-		//New Set necessary, because the sapConnection properties shall not be affected
-		final Set<Entry<Object, Object>> jco = new HashSet<Entry<Object,Object>>(sapConnection.entrySet());
-		final FilterCollection filter = new FilterCollection(jco, "jco", "context");
-		
-		filter.filter();
-		
-		return jco;
 	}
 	
 	/**
