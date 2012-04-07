@@ -55,7 +55,7 @@ public class ConnectionPropertiesManagerTest {
 
 	@Test
 	public void readDefaultSAPProperties() {
-		assertEquals("sap.spree.de", manager.getSAPProperty("jco.client.ashost"));
+		assertEquals("some.sap-system.com", manager.getSAPProperty("jco.client.ashost"));
 	}
 
 	@Test

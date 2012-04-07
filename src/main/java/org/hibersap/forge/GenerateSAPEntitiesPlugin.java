@@ -93,7 +93,7 @@ public class GenerateSAPEntitiesPlugin implements Plugin {
 	@Inject
 	public GenerateSAPEntitiesPlugin(final Project project, final Shell shell) throws IOException {
 		final String pluginDirPath  = shell.getEnvironment().getPluginDirectory().getFullyQualifiedName();
-		final String configDirPath = pluginDirPath + "/org/hibersap/forge/plugin/hibersap-plugin/config/";
+		final String configDirPath = pluginDirPath + "/org/hibersap/forge/hibersap-plugin/config/";
 		
 		this.shell = shell;
 		this.project = project;
@@ -239,14 +239,19 @@ public class GenerateSAPEntitiesPlugin implements Plugin {
 			sessionManagerNames.add(newSessionManager);
 			shell.println();
 			sessionManagerNameChoice = shell.promptChoiceTyped("Please choose a session manager", sessionManagerNames, newSessionManager);
-			if(sessionManagerNameChoice.equals(newSessionManager) && xmlManager.sessionManagerNameExists(sessionManagerName)) {
-				shell.println();
-				replace = shell.promptBoolean("\nSession manager " + sessionManagerName + " already exists.\nReplace session manager? [" + sessionManagerName + "]", false);
-
-				if(replace) {
-					update = false;
+			if(sessionManagerNameChoice.equals(newSessionManager)) {
+				if(xmlManager.sessionManagerNameExists(sessionManagerName)) {
+					shell.println();
+					replace = shell.promptBoolean("\nSession manager " + sessionManagerName + " already exists.\nReplace session manager? [" + sessionManagerName + "]", false);
+	
+					if(replace) {
+						update = false;
+					} else {
+						update = true;
+					}
 				} else {
-					update = true;
+					update = false;
+					replace = true;
 				}
 			} else {
 				update = true;

@@ -43,8 +43,6 @@ import org.junit.Test;
  */
 public class GenerateSAPEntitiesTest extends AbstractShellTest {
 
-	//TODO Unterschied zwischen Singleton und nicht singleton test?
-	
 	private String pluginDirPath;
 	private String filePath; 
 	private boolean fileExists = false;
@@ -58,7 +56,7 @@ public class GenerateSAPEntitiesTest extends AbstractShellTest {
 	@Before
 	public void init() throws Exception {
 		pluginDirPath = getShell().getEnvironment().getPluginDirectory().getFullyQualifiedName();
-		filePath = pluginDirPath + "/org/hibersap/forge/plugin/hibersap-plugin/config/sap-connection.properties"; 
+		filePath = pluginDirPath + "/org/hibersap/forge/hibersap-plugin/config/sap-connection.properties"; 
 		final File file = new File(filePath);
 		final Properties properties = new Properties();
 		fileExists = file.exists();
