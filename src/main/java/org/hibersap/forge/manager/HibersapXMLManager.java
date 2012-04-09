@@ -221,7 +221,12 @@ public class HibersapXMLManager {
 		final JAXBContext context = JAXBContext.newInstance(HibersapConfig.class);
 		final Marshaller marshaller = context.createMarshaller();
 		final File file = new File(this.hibersapXMLStorePath + HibersapXMLManager.HIBERSAPXML_FILENAME);
-
+		final File metaInfDir = file.getParentFile(); 
+		
+		if(!metaInfDir.exists()) {
+			metaInfDir.mkdir();
+		}
+		
 		marshaller.marshal(this.hibersapConfig, file);
 	}
 
