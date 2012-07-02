@@ -15,7 +15,7 @@ This plugin is licensed under LGPL, like Forge and Hibersap
 
 This plugin is using Hibersap, which is using the SAP Java Connector (JCo).<br>
 Before using download SAP Java Connector 3 (http://service.sap.com/connectors) and extract the sapjco3.jar and the sapjco3 native library.<br>
-(We assume you use version 3.0.7, if not you should use the correct version number, please have a look at the project pom.xml too.)
+(We assume you use version 3.0.7 or higher)
 
 Install sapjco3 jar to your local Maven repository from the command line: 
 
