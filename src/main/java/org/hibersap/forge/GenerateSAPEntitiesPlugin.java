@@ -408,7 +408,7 @@ public class GenerateSAPEntitiesPlugin implements Plugin {
 
 			dependencyFacet.addDirectDependency(newDependency);
 
-			//Just to have nicer shell view
+			//Just to have a nicer shell view
 			if (versions.size() > 1) {
 				this.shell.println();
 			}
