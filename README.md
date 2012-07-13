@@ -29,7 +29,7 @@ Install sapjco3 jar to your local Maven repository from the command line:
 
 Also watch the screen-cast that shows the usage of the Hibersap-Forge-Plugin:
 
-<p><a href="http://vimeo.com/45260307">JBoss Forge Hibersap Plugin Screencast</a> from <a href="http://vimeo.com/user12377452">mxsb</a> on <a href="http://vimeo.com">Vimeo</a></p>
+<p><a href="http://vimeo.com/45260307">JBoss Forge Hibersap Plugin Screencast</a> from <a href="http://vimeo.com/user12377452">mxsb</a> on <a href="http://vimeo.com">Vimeo</a>.</p>
 
 <h2>Commands</h2>
 
