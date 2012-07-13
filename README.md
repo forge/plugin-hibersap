@@ -27,7 +27,9 @@ Install sapjco3 jar to your local Maven repository from the command line:
 * Set your session manager name and connection properties
 * Use the generate-sap-entities command to connect to your SAP system and generate Java classes which are used by Hibersap. 
 
-Also watch the screen-cast that shows the usage of the Hibersap-Forge-Plugin:
+Also read the akquinet blogpost and watch the screen-cast that shows the usage of the Hibersap-Forge-Plugin:
+
+<p><a href="http://blog.akquinet.de/2012/07/12/use-jboss-forge-to-generate-hibersap-classes-calling-sap-functions/">Use JBoss Forge to generate Hibersap Classes that call SAP Functions</a>
 
 <p><a href="http://vimeo.com/45260307">JBoss Forge Hibersap Plugin Screencast</a> from <a href="http://vimeo.com/user12377452">mxsb</a> on <a href="http://vimeo.com">Vimeo</a>.</p>
 
