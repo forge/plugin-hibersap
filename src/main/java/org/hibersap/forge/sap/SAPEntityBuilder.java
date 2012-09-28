@@ -137,14 +137,18 @@ public class SAPEntityBuilder {
 			bodyBuilder.append(";\n");
 		}
 
-		final String temp = parameterBuilder.toString();
-		final String parameters = temp.substring(0, temp.length() - 2);
 		final Method<JavaClass> constructor = bapiClass.addMethod();
-
+		
 		constructor.setPublic();
 		constructor.setConstructor(true);
-		constructor.setParameters(parameters);
-		constructor.setBody(bodyBuilder.toString());
+
+		if(!importParams.isEmpty()) {
+			final String temp = parameterBuilder.toString();
+			final String parameters = temp.substring(0, temp.length() - 2);
+			
+			constructor.setParameters(parameters);
+			constructor.setBody(bodyBuilder.toString());
+		}
 	}
 
 	/**
