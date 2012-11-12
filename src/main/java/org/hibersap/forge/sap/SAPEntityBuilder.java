@@ -32,7 +32,6 @@ import org.hibersap.annotations.ParameterType;
 import org.hibersap.annotations.Table;
 import org.hibersap.mapping.model.BapiMapping;
 import org.hibersap.mapping.model.FieldMapping;
-import org.hibersap.mapping.model.ObjectMapping;
 import org.hibersap.mapping.model.ParameterMapping;
 import org.hibersap.mapping.model.ParameterMapping.ParamType;
 import org.hibersap.mapping.model.StructureMapping;
@@ -65,8 +64,8 @@ public class SAPEntityBuilder {
 	public void createNew(final String className, final String javaPackage, final BapiMapping functionMapping) {
 		final String bapiName = functionMapping.getBapiName();
 
-		final Set<ObjectMapping> importParams = functionMapping.getImportParameters();
-		final Set<ObjectMapping> exportParams = functionMapping.getExportParameters();
+		final Set<ParameterMapping> importParams = functionMapping.getImportParameters();
+		final Set<ParameterMapping> exportParams = functionMapping.getExportParameters();
 		final Set<TableMapping> tableParams = functionMapping.getTableParameters();
 
 		final JavaClass bapiClass = createJavaClass(className, javaPackage);
@@ -109,11 +108,11 @@ public class SAPEntityBuilder {
 	 * @param bapiClass - the BAPI class
 	 * @param importParams - the import parameters
 	 */
-	private void createConstructor(final JavaClass bapiClass, final Set<ObjectMapping> importParams) {
+	private void createConstructor(final JavaClass bapiClass, final Set<ParameterMapping> importParams) {
 		final StringBuilder parameterBuilder = new StringBuilder();
 		final StringBuilder bodyBuilder = new StringBuilder();
 
-		for (final ObjectMapping parameterMapping : importParams) {
+		for (final ParameterMapping parameterMapping : importParams) {
 			final String parameterFieldName = parameterMapping.getJavaName().substring(1);
 			final Class<?> clazz = parameterMapping.getAssociatedType();
 			final String parameterType;

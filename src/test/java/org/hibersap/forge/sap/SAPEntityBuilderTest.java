@@ -63,17 +63,17 @@ public class SAPEntityBuilderTest {
 		mapping.addImportParameter(new FieldMapping(String.class, "NO_AVAILIBILITY", "_noAvailibility", null));
 		mapping.addImportParameter(new FieldMapping(Date.class, "FLIGHTDATE", "_flightdate", null));
 
-		final Set<FieldMapping> priceInfoParamters = new HashSet<FieldMapping>();
-		priceInfoParamters.add(new FieldMapping(BigDecimal.class, "PRICE_ECO2", "_priceEco2", null));
-		priceInfoParamters.add(new FieldMapping(String.class, "CURR", "_curr", null));
-		mapping.addExportParameter(new StructureMapping(null, "PRICE_INFO", "_priceInfo", priceInfoParamters));
+//		final Set<FieldMapping> priceInfoParamters = new HashSet<FieldMapping>();
+//		priceInfoParamters.add(new FieldMapping(BigDecimal.class, "PRICE_ECO2", "_priceEco2", null));
+//		priceInfoParamters.add(new FieldMapping(String.class, "CURR", "_curr", null));
+		mapping.addExportParameter(new StructureMapping(null, "PRICE_INFO", "_priceInfo", null));
 
-		final Set<FieldMapping> extOutParamters = new HashSet<FieldMapping>();
-		extOutParamters.add(new FieldMapping(String.class, "STRUCTURE", "_structure", null));
-		extOutParamters.add(new FieldMapping(String.class, "VALUEPART4", "_valuepart4", null));
+//		final Set<FieldMapping> extOutParamters = new HashSet<FieldMapping>();
+//		extOutParamters.add(new FieldMapping(String.class, "STRUCTURE", "_structure", null));
+//		extOutParamters.add(new FieldMapping(String.class, "VALUEPART4", "_valuepart4", null));
 		final StructureMapping structureMapping = new StructureMapping(null, "EXTENSION_OUT", "_extensionOut",
-				extOutParamters);
-		mapping.addTableParameter(new TableMapping(List.class, null, "EXTENSION_OUT", "_extensionOut", structureMapping));
+				null);
+		mapping.addTableParameter(new TableMapping(List.class, null, "EXTENSION_OUT", "_extensionOut", structureMapping, null));
 
 		return mapping;
 	}
@@ -91,17 +91,17 @@ public class SAPEntityBuilderTest {
 	public void createSAPEntityFromMappingWithoutImportParams() {
 		final BapiMapping mapping = new BapiMapping(null, "BAPI_FLCONN_GETDETAIL", null);
 
-		final Set<FieldMapping> priceInfoParamters = new HashSet<FieldMapping>();
-		priceInfoParamters.add(new FieldMapping(BigDecimal.class, "PRICE_ECO2", "_priceEco2", null));
-		priceInfoParamters.add(new FieldMapping(String.class, "CURR", "_curr", null));
-		mapping.addExportParameter(new StructureMapping(null, "PRICE_INFO", "_priceInfo", priceInfoParamters));
+//		final Set<FieldMapping> priceInfoParamters = new HashSet<FieldMapping>();
+//		priceInfoParamters.add(new FieldMapping(BigDecimal.class, "PRICE_ECO2", "_priceEco2", null));
+//		priceInfoParamters.add(new FieldMapping(String.class, "CURR", "_curr", null));
+		mapping.addExportParameter(new StructureMapping(null, "PRICE_INFO", "_priceInfo", null));
 
-		final Set<FieldMapping> extOutParamters = new HashSet<FieldMapping>();
-		extOutParamters.add(new FieldMapping(String.class, "STRUCTURE", "_structure", null));
-		extOutParamters.add(new FieldMapping(String.class, "VALUEPART4", "_valuepart4", null));
+//		final Set<FieldMapping> extOutParamters = new HashSet<FieldMapping>();
+//		extOutParamters.add(new FieldMapping(String.class, "STRUCTURE", "_structure", null));
+//		extOutParamters.add(new FieldMapping(String.class, "VALUEPART4", "_valuepart4", null));
 		final StructureMapping structureMapping = new StructureMapping(null, "EXTENSION_OUT", "_extensionOut",
-				extOutParamters);
-		mapping.addTableParameter(new TableMapping(List.class, null, "EXTENSION_OUT", "_extensionOut", structureMapping));
+				null);
+		mapping.addTableParameter(new TableMapping(List.class, null, "EXTENSION_OUT", "_extensionOut", structureMapping, null));
 
 		final SAPEntityBuilder builder = new SAPEntityBuilder();
 		
