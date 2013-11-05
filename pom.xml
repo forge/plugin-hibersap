@@ -15,7 +15,7 @@
     <jco.version>[3.0.0,)</jco.version>
     <servlet-api.version>3.0.1</servlet-api.version>
     <validation-api.version>1.0.0.GA</validation-api.version>
-    <hibersap.version>1.1.0</hibersap.version>
+    <hibersap.version>[1.1.0,)</hibersap.version>
     <forge.api.version>1.4.2.Final</forge.api.version>
   </properties>
   <dependencies>
@@ -75,7 +75,7 @@
       <url>http://repository.jboss.org/nexus/content/groups/public</url>
     </repository>
     <repository>
-      <id>repository.hibersap</id>
+      <id>Hibersap_Maven_Repository</id>
       <name>Hibersap Repository for Maven</name>
       <url>https://svn.code.sf.net/p/hibersap/code/m2repo/</url>
     </repository>
